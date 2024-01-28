@@ -1,5 +1,6 @@
 import json
 from datetime import date
+from fastapi import HTTPException
 from uuid import uuid4
 
 from backend.entities import (
@@ -21,13 +22,18 @@ class EntityNotFoundException(Exception):
 #   -------- users --------   #
 
 
-def get_all_users() -> list[UserInDB]:
+def get_users() -> list[UserInDB]:
     """
     Retrieve all users from the database.
 
     :return: ordered list of users
     """
+    users = DB["users"].values()
 
+    return [UserInDB(**user_data) for user_data in DB["users"].values()]
+
+
+def get_all_users() -> list[UserInDB]:
     return [UserInDB(**user_data) for user_data in DB["users"].values()]
 
 
@@ -38,10 +44,19 @@ def create_user(user_create: UserCreate) -> UserInDB:
     :param user_create: attributes of the user to be created
     :return: the newly created user
     """
+    user_id = user_create.id
+
+    if user_create.id in DB["users"]:
+        error_detail = {
+            "type": "duplicate_entity",
+            "entity_name": "User",
+            "entity_id": user_id
+        }
+        raise HTTPException(422, detail=error_detail)
 
     user = UserInDB(
-        id=uuid4().hex,
-        intake_date=date.today(),
+        id=user_create.id,
+        created_at=date.today(),
         **user_create.model_dump(),
     )
     DB["users"][user.id] = user.model_dump()
@@ -56,30 +71,8 @@ def get_user_by_id(user_id: str) -> UserInDB:
     :return: the retrieved user
     """
 
-    return UserInDB(**DB["users"][user_id])
+    if user_id in DB["users"]:
+        return UserInDB(**DB["users"][user_id])
 
+    raise EntityNotFoundException(entity_name="User", entity_id=user_id)
 
-def update_user(user_id: str, user_update: UserUpdate) -> UserInDB:
-    """
-    Update an user in the database.
-
-    :param user_id: id of the user to be updated
-    :param user_update: attributes to be updated on the user
-    :return: the updated user
-    """
-
-    user = get_user_by_id(user_id)
-    for key, value in user_update.update_attributes().items():
-        setattr(user, key, value)
-    return user
-
-
-def delete_user(user_id: str):
-    """
-    Delete an user from the database.
-
-    :param user_id: the id of the user to be deleted
-    """
-
-    user = get_user_by_id(user_id)
-    del DB["users"][user.id]

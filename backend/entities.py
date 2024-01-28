@@ -20,7 +20,6 @@ class UserCreate(BaseModel):
     """Represents parameters for adding a new user to the system."""
 
     id: str
-    created_at: datetime
 
 
 class UserUpdate(BaseModel):
@@ -37,8 +36,14 @@ class UserInDB(BaseModel):
     created_at: datetime
 
 
+class UserResponse(BaseModel):
+    """Represents an API response for a User."""
+
+    user: UserInDB
+
+
 class UserCollection(BaseModel):
     """Represents an API response for a collection of users."""
 
     meta: Metadata
-    users: list[User]
+    users: list[UserInDB]
