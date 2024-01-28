@@ -33,7 +33,7 @@ class UserInDB(BaseModel):
     """Represents a user in the database."""
 
     id: str
-    created_at: datetime
+    created_at: datetime.isoformat()
 
 
 class UserResponse(BaseModel):

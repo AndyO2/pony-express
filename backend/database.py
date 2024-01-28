@@ -1,7 +1,6 @@
 import json
-from datetime import date
+from datetime import datetime
 from fastapi import HTTPException
-from uuid import uuid4
 
 from backend.entities import (
     UserInDB,
@@ -28,7 +27,6 @@ def get_users() -> list[UserInDB]:
 
     :return: ordered list of users
     """
-    users = DB["users"].values()
 
     return [UserInDB(**user_data) for user_data in DB["users"].values()]
 
@@ -56,7 +54,7 @@ def create_user(user_create: UserCreate) -> UserInDB:
 
     user = UserInDB(
         id=user_create.id,
-        created_at=date.today(),
+        created_at=datetime.now().isoformat(),
         **user_create.model_dump(),
     )
     DB["users"][user.id] = user.model_dump()
