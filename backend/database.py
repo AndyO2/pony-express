@@ -21,16 +21,6 @@ class EntityNotFoundException(Exception):
 #   -------- users --------   #
 
 
-def get_users() -> list[UserInDB]:
-    """
-    Retrieve all users from the database.
-
-    :return: ordered list of users
-    """
-
-    return [UserInDB(**user_data) for user_data in DB["users"].values()]
-
-
 def get_all_users() -> list[UserInDB]:
     return [UserInDB(**user_data) for user_data in DB["users"].values()]
 

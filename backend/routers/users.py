@@ -19,7 +19,7 @@ def get_users():
 
     return UserCollection(
         meta={"count": len(users)},
-        animals=sorted(users, key=lambda user: getattr(user, "id")),
+        users=sorted(users, key=lambda user: getattr(user, "id")),
     )
 
 
