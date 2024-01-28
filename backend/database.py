@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import HTTPException
 
 from backend.entities import (
@@ -46,7 +46,7 @@ def create_user(user_create: UserCreate) -> UserInDB:
 
     user = UserInDB(
         id=user_id,
-        created_at=datetime.now(),
+        created_at=datetime.now(timezone.utc).isoformat(),
         **user_create.model_dump(),
     )
     DB["users"][user.id] = user.model_dump()
@@ -55,7 +55,7 @@ def create_user(user_create: UserCreate) -> UserInDB:
 
 def get_user_by_id(user_id: str) -> UserInDB:
     """
-    Retrieve an user from the database.
+    Retrieve a user from the database.
 
     :param user_id: id of the user to be retrieved
     :return: the retrieved user
@@ -72,18 +72,18 @@ def get_all_chats() -> list[ChatInDB]:
     return [ChatInDB(**chat_data) for chat_data in DB["chats"].values()]
 
 
-def get_chats_by_user_id(user_id: str) -> UserInDB:
-    """
-    Retrieve an user from the database.
+def get_chats_by_user_id(user_id: str) -> list[ChatInDB]:
+    if user_id not in DB["users"]:
+        raise EntityNotFoundException(entity_name="User", entity_id=user_id)
 
-    :param user_id: id of the user to be retrieved
-    :return: the retrieved user
-    """
+    ret = []
+    chats = get_all_chats()
 
-    if user_id in DB["users"]:
-        return UserInDB(**DB["users"][user_id])
+    for chat in chats:
+        if chat.user_ids.__contains__(user_id):
+            ret.append(chat)
 
-    raise EntityNotFoundException(entity_name="User", entity_id=user_id)
+    return ret
 
 
 def get_chat_by_id(chat_id: str) -> ChatInDB:

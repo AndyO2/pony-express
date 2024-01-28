@@ -5,7 +5,8 @@ from backend.entities import (
     UserInDB,
     UserResponse,
     UserCreate,
-    UserCollection
+    UserCollection,
+    ChatsForUserResponse,
 )
 
 users_router = APIRouter(prefix="/users", tags=["Users"])
@@ -52,6 +53,24 @@ def get_user(user_id: str):
 
 
 # GET /users/{user_id}/chats returns a list of chats for a given user id alongside some metadata.
-@users_router.get("/{user_id}/chats", status_code=200)
-def get_chats_for_user(user_id: str):
-    pass
+@users_router.get(
+    "/{user_id}/chats",
+    status_code=200,
+    response_model=ChatsForUserResponse,
+    description="return list of chats for a given user id")
+def get_user_chats(user_id: str):
+    user = db.get_user_by_id(user_id)
+    if user is None:
+        error_detail = {
+            "type": "entity_not_found",
+            "entity_name": "User",
+            "entity_id": user_id
+        }
+        raise HTTPException(status_code=404, detail=error_detail)
+
+    chats = db.get_chats_by_user_id(user_id)
+
+    return ChatsForUserResponse(
+        meta={"count": len(chats)},
+        users=sorted(chats, key=lambda chat: getattr(chat, "name")),
+    )
