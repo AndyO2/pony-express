@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, HTMLResponse
+from starlette.responses import HTMLResponse
 
-from backend.routers.animals import animals_router
+from backend.routers.chats import chats_router
 from backend.routers.users import users_router
 from backend.database import EntityNotFoundException
 
@@ -11,7 +12,7 @@ app = FastAPI(
     version="0.1.0",
 )
 
-app.include_router(animals_router)
+app.include_router(chats_router)
 app.include_router(users_router)
 
 
@@ -33,7 +34,7 @@ def handle_entity_not_found(
 
 
 @app.get("/", include_in_schema=False)
-def default() -> str:
+def default() -> HTMLResponse:
     return HTMLResponse(
         content=f"""
         <html>

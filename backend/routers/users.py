@@ -3,36 +3,27 @@ from fastapi import APIRouter
 users_router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@users_router.get("")
+# GET /users returns a list of users sorted by id alongside some metadata. The metadata has the count of users (
+# integer). The response has HTTP status code 200 and adheres to the following format:
+@users_router.get("/users")
 def get_users():
     pass
 
 
-@users_router.post("")
+# POST /users creates a new user. The body of the request adheres to the format:
+@users_router.post("/users")
 def create_user():
     pass
 
 
-@users_router.get("/{user_id}")
+# GET /users/{user_id} returns a user for a given id. If a user with the id exists, the response has status code 200
+# and adheres to the format:
+@users_router.get("users/{user_id}")
 def get_user(user_id: str):
     pass
 
 
-@users_router.put("/{user_id}")
-def update_user(user_id: str):
-    pass
-
-
-@users_router.delete("/{user_id}")
-def delete_user(user_id: str):
-    pass
-
-
-@users_router.get("/{user_id}/fosters")
-def get_user_fosters(user_id: str):
-    pass
-
-
-@users_router.get("/{user_id}/adoptions")
-def get_user_adoptions(user_id: str):
+# GET /users/{user_id}/chats returns a list of chats for a given user id alongside some metadata.
+@users_router.get("/users/{user_id}/chats")
+def get_chats_for_user(user_id: str):
     pass
