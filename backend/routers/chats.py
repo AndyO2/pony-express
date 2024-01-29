@@ -35,6 +35,7 @@ def get_chat_by_id(chat_id: str):
     :param chat_id: the chat id
     :return: the chat
     gets a chat by id
+
     """
     chat = db.get_chat_by_id(chat_id)
     if chat is None:
