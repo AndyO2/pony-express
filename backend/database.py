@@ -79,7 +79,7 @@ def get_chats_by_user_id(user_id: str) -> list[ChatInDB]:
     chats = get_all_chats()
 
     for chat in chats:
-        if chat.user_ids.__contains__(user_id):
+        if user_id in chat.user_ids:
             ret.append(chat)
 
     return ret
