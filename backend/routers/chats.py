@@ -9,16 +9,18 @@ from backend.entities import (
 chats_router = APIRouter(prefix="/chats", tags=["Chats"])
 
 
-@chats_router.get("")
+# GET /chats returns a list of chats sorted by name alongside some metadata.
+# The metadata has the count of chats (integer). The response has the HTTP status code 200
+@chats_router.get("", status_code=200, response_model=ChatCollection)
 def get_chats():
     chats = db.get_all_chats()
     return ChatCollection(
         meta={"count": len(chats)},
-        users=sorted(chats, key=lambda chat: getattr(chat, "name")),
+        chats=sorted(chats, key=lambda chat: getattr(chat, "name")),
     )
 
 
-@chats_router.get("/{chat_id}")
+@chats_router.get("/{chat_id}", status_code=200, response_model=ChatResponse)
 def get_chat_by_id(chat_id: str):
     chat = db.get_chat_by_id(chat_id)
     if chat is None:
@@ -32,7 +34,7 @@ def get_chat_by_id(chat_id: str):
 
 
 # PUT /chats/{chat_id} updates a chat for a given id.
-@chats_router.put("/{chat_id}")
+@chats_router.put("/{chat_id}", status_code=200, response_model=ChatResponse)
 def update_chat(chat_id: str, chat_update: ChatUpdate):
     chat = db.get_chat_by_id(chat_id)
     if chat is None:
