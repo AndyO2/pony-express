@@ -100,6 +100,12 @@ class Message(BaseModel):
     created_at: datetime
 
 
+class MessageCollection(BaseModel):
+    """Represents parameters for updating a chat in the system."""
+    meta: Metadata
+    messages: list[Message]
+
+
 class GetMessagesForChat(BaseModel):
     """Represents parameters for updating a chat in the system."""
     meta: Metadata

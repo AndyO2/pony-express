@@ -16,6 +16,12 @@ users_router = APIRouter(prefix="/users", tags=["Users"])
 # integer). The response has HTTP status code 200 and adheres to the following format:
 @users_router.get("", status_code=200, response_model=UserCollection)
 def get_users():
+    """
+
+    :return: a list of users
+    returns a list of users sorted by id with metatdata
+
+    """
     users = db.get_all_users()
 
     return UserCollection(
@@ -30,6 +36,13 @@ def get_users():
     status_code=200,
     response_model=UserResponse)
 def create_user(user_create: UserCreate):
+    """
+
+    :param user_create: the user to create
+    :return: User Response
+    creates a new user
+
+    """
     return UserResponse(user=db.create_user(user_create))
 
 
@@ -41,6 +54,13 @@ def create_user(user_create: UserCreate):
     response_model=UserResponse,
     description="get a user given a user_id")
 def get_user(user_id: str):
+    """
+
+    :param user_id: the user id
+    :return: UserResponse
+    returns a user for a given id
+
+    """
     user = db.get_user_by_id(user_id)
     if user is None:
         error_detail = {
@@ -59,6 +79,11 @@ def get_user(user_id: str):
     response_model=ChatsForUserResponse,
     description="return list of chats for a given user id")
 def get_user_chats(user_id: str):
+    """
+    :param user_id: the user_id
+    :return: a list of chats for user
+    return list of chats for a given user id
+    """
     user = db.get_user_by_id(user_id)
     if user is None:
         error_detail = {
