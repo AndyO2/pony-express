@@ -136,12 +136,10 @@ def get_messages_for_chat(chat_id: str):
     if chat_id not in DB["chats"]:
         raise EntityNotFoundException(entity_name="Chat", entity_id=chat_id)
 
-    chat = get_chat_by_id(chat_id)
-
     messages = []
-    for message in chat["messages"]:
-        messages.append(Message(id=message.id,
-                                user_id=message.user_id,
-                                text=message.text,
-                                created_at=message.created_at))
+    for message in DB["chats"][chat_id]["messages"]:
+        messages.append(Message(id=message["id"],
+                                user_id=message["user_id"],
+                                text=message["text"],
+                                created_at=message["created_at"]))
     return messages
