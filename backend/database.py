@@ -46,8 +46,7 @@ def create_user(user_create: UserCreate) -> UserInDB:
 
     user = UserInDB(
         id=user_id,
-        created_at=datetime.now(timezone.utc).isoformat(),
-        # **user_create.model_dump(),
+        created_at=datetime.now(),
     )
     DB["users"][user_id] = user.model_dump()
     return user
