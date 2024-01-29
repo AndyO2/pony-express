@@ -3,7 +3,8 @@ from backend import database as db
 from backend.entities import (
     ChatCollection,
     ChatResponse,
-    ChatUpdate
+    ChatUpdate,
+    UsersInChatResponse,
 )
 
 chats_router = APIRouter(prefix="/chats", tags=["Chats"])
@@ -91,7 +92,7 @@ def get_messages_for_chat_id(chat_id: str):
     "/{chat_id}/users",
     status_code=200,
 )
-def get_users_for_chat(chat_id: str):
+def get_users_for_chat(chat_id: str) -> UsersInChatResponse:
     chat = db.get_chat_by_id(chat_id)
     if chat is None:
         error_detail = {
@@ -100,4 +101,14 @@ def get_users_for_chat(chat_id: str):
             "entity_id": chat_id
         }
         raise HTTPException(status_code=404, detail=error_detail)
-    pass
+
+    users = []
+    for user_id in chat.user_ids:
+        user = db.get_user_by_id(user_id)
+        users.append(user)
+
+    return UsersInChatResponse(
+        meta={"count": len(users)},
+        users=users
+    )
+

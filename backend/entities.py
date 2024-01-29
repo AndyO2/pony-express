@@ -106,4 +106,6 @@ class GetMessagesForChat(BaseModel):
     messages: list[Message]
 
 
-
+class UsersInChatResponse(BaseModel):
+    meta: Metadata
+    users: list[str]
