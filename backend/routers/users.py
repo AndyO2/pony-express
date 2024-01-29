@@ -84,14 +84,6 @@ def get_user_chats(user_id: str):
     :return: a list of chats for user
     return list of chats for a given user id
     """
-    user = db.get_user_by_id(user_id)
-    if user is None:
-        error_detail = {
-            "type": "entity_not_found",
-            "entity_name": "User",
-            "entity_id": user_id
-        }
-        raise HTTPException(status_code=404, detail=error_detail)
 
     chats = db.get_chats_by_user_id(user_id)
 
