@@ -134,13 +134,6 @@ def get_users_for_chat(chat_id: str) -> UsersInChatResponse:
 
     """
     chat = db.get_chat_by_id(chat_id)
-    if chat is None:
-        error_detail = {
-            "type": "entity_not_found",
-            "entity_name": "Chat",
-            "entity_id": chat_id
-        }
-        raise HTTPException(status_code=404, detail=error_detail)
 
     users = []
     for user_id in sorted(chat.user_ids):

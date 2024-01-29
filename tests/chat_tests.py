@@ -19,3 +19,8 @@ def test_get_chat_messages_valid_id():
     response = client.get(f"/chats/6215e6864e884132baa01f7f972400e2/messages")
 
     assert response.status_code == 200
+
+
+def test_get_chat_users():
+    response = client.get("/chats/6215e6864e884132baa01f7f972400e2/users")
+    assert response.status_code == 200

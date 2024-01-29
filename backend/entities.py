@@ -111,4 +111,4 @@ class GetMessagesForChat(BaseModel):
 
 class UsersInChatResponse(BaseModel):
     meta: Metadata
-    users: list[str]
+    users: list[UserInDB]
