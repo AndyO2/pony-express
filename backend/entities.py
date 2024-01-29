@@ -51,13 +51,6 @@ class UserCollection(BaseModel):
 
 # chats-----
 
-class Chats(BaseModel):
-    id: str
-    name: str
-    user_ids: list[str]
-    owner_id: str
-    created_at: datetime
-
 
 class ChatInDB(BaseModel):
     id: str
@@ -65,6 +58,10 @@ class ChatInDB(BaseModel):
     user_ids: list[str]
     owner_id: str
     created_at: datetime
+
+
+class Chat(BaseModel):
+    chat: ChatInDB
 
 
 class ChatResponse(BaseModel):

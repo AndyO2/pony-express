@@ -110,7 +110,7 @@ def get_messages_for_chat_id(chat_id: str):
     returns a list of messages for a given chat id
 
     """
-    messages = get_messages_for_chat_id(chat_id)
+    messages = db.get_messages_for_chat(chat_id)
 
     return MessageCollection(
         meta={"count": len(messages)},

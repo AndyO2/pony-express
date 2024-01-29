@@ -10,6 +10,7 @@ def test_get_all_users():
     response = client.get("/users")
     assert response.status_code == 200
 
+
 def test_get_user_chats():
     response = client.get("/users/bishop/chats")
     expected_response = {
