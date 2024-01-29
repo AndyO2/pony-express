@@ -109,6 +109,6 @@ def get_users_for_chat(chat_id: str) -> UsersInChatResponse:
 
     return UsersInChatResponse(
         meta={"count": len(users)},
-        users=users
+        users=sorted(users, key=lambda user_: getattr(user_, "id")),
     )
 
