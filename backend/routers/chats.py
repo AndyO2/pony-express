@@ -59,15 +59,6 @@ def update_chat(chat_id: str, chat_update: ChatUpdate):
     updates a chat
 
     """
-    chat = db.get_chat_by_id(chat_id)
-    if chat is None:
-        error_detail = {
-            "type": "entity_not_found",
-            "entity_name": "Chat",
-            "entity_id": chat_id
-        }
-        raise HTTPException(status_code=404, detail=error_detail)
-
     return ChatResponse(
         chat=db.update_chat(chat_id, chat_update),
     )
@@ -86,14 +77,6 @@ def delete_chat(chat_id: str):
     deletes a chat
 
     """
-    chat = db.get_chat_by_id(chat_id)
-    if chat is None:
-        error_detail = {
-            "type": "entity_not_found",
-            "entity_name": "Chat",
-            "entity_id": chat_id
-        }
-        raise HTTPException(status_code=404, detail=error_detail)
     db.delete_chat(chat_id)
 
 
