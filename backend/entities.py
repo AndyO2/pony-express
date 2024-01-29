@@ -77,7 +77,7 @@ class ChatsForUserResponse(BaseModel):
     """Represents an API response for chats for user"""
 
     meta: Metadata
-    chats: list[Chats]
+    chats: list[ChatInDB]
 
 
 class ChatCollection(BaseModel):
