@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException
 from backend import database as db
 
 from backend.entities import (
-    UserInDB,
     UserResponse,
     UserCreate,
     UserCollection,
@@ -30,7 +29,7 @@ def get_users():
     )
 
 
-# POST /users creates a new user. The body of the request adheres to the format:
+# POST /users creates a new user
 @users_router.post(
     "",
     status_code=200,
@@ -61,15 +60,7 @@ def get_user(user_id: str):
     returns a user for a given id
 
     """
-    user = db.get_user_by_id(user_id)
-    if user is None:
-        error_detail = {
-            "type": "entity_not_found",
-            "entity_name": "User",
-            "entity_id": user_id
-        }
-        raise HTTPException(status_code=404, detail=error_detail)
-    return UserResponse(user=user)
+    return UserResponse(user=db.get_user_by_id(user_id))
 
 
 # GET /users/{user_id}/chats returns a list of chats for a given user id alongside some metadata.
