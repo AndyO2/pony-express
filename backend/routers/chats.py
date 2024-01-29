@@ -110,17 +110,11 @@ def get_messages_for_chat_id(chat_id: str):
     returns a list of messages for a given chat id
 
     """
-    chat = db.get_chat_by_id(chat_id)
-    if chat is None:
-        error_detail = {
-            "type": "entity_not_found",
-            "entity_name": "Chat",
-            "entity_id": chat_id
-        }
-        raise HTTPException(status_code=404, detail=error_detail)
+    messages = get_messages_for_chat_id(chat_id)
+
     return MessageCollection(
-        meta={"count": 1},
-        messages=[]
+        meta={"count": len(messages)},
+        messages=messages
     )
 
 

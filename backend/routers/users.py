@@ -91,3 +91,4 @@ def get_user_chats(user_id: str):
         meta={"count": len(chats)},
         chats=sorted(chats, key=lambda chat: getattr(chat, "name")),
     )
+
