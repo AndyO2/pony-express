@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, HTMLResponse
+from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse
 
 from backend.routers.chats import chats_router
@@ -15,11 +16,19 @@ app = FastAPI(
 app.include_router(chats_router)
 app.include_router(users_router)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # change this as appropriate for your setup
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.exception_handler(EntityNotFoundException)
 def handle_entity_not_found(
-    _request: Request,
-    exception: EntityNotFoundException,
+        _request: Request,
+        exception: EntityNotFoundException,
 ) -> JSONResponse:
     return JSONResponse(
         status_code=404,
