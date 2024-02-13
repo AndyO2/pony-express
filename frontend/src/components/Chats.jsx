@@ -1,60 +1,97 @@
+/* eslint-disable react/prop-types */
 import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";
 import "./Chats.css";
 
-// function AnimalListItem(chat) {
-//     return (
-//         <Link
-//             key={chat.id}
-//             to={`/animals/${chat.id}`}
-//             className="animal-list-item">
-//             <div className="animal-list-item-name">{animal.name}</div>
-//             <div className="animal-list-item-detail">{animal.kind}</div>
-//             <div className="animal-list-item-detail">{animal.age}</div>
-//         </Link>
-//     );
-// }
+function ChatListItem({ chat }) {
+    return (
+        <Link
+            key={chat.id}
+            to={`/chats/${chat.id}`}
+            className="chat-list-item"></Link>
+    );
+}
 
-// function AnimalList({ animals }) {
-//     return (
-//         <div className="animal-list">
-//             {animals.map((animal) => (
-//                 <AnimalListItem
-//                     key={animal.id}
-//                     chat={animal}
-//                 />
-//             ))}
-//         </div>
-//     );
-// }
+function ChatList({ chats }) {
+    return (
+        <div className="chat-list">
+            {chats.map((chat) => (
+                <ChatListItem
+                    key={chat.id}
+                    chat={chat}
+                />
+            ))}
+        </div>
+    );
+}
 
-// function AnimalListContainer() {
-//     const { data } = useQuery({
-//         queryKey: ["animals"],
-//         queryFn: () => fetch("http://127.0.0.1:8000/animals").then((response) => response.json()),
-//     });
+function ChatCard({ chat }) {
+    const attributes = ["kind", "age", "intake_date", "fixed", "vaccinated"];
 
-//     if (data?.animals) {
-//         return (
-//             <div className="animal-list-container">
-//                 <h2>animals</h2>
-//                 <AnimalList animals={data.animals} />
-//             </div>
-//         );
-//     }
+    return (
+        <div className="chat-card">
+            {attributes.map((attr) => (
+                <div
+                    key={attr}
+                    className="chat-card-attr">
+                    {attr}: {chat[attr].toString()}
+                </div>
+            ))}
+        </div>
+    );
+}
 
-//     return <h2>animal list</h2>;
-// }
+function ChatCardContainer({ chat }) {
+    return (
+        <div className="animal-card-container">
+            <h2>{chat.name}</h2>
+            <ChatCard animal={chat} />
+        </div>
+    );
+}
+
+function ChatListContainer() {
+    const { data } = useQuery({
+        queryKey: ["chats"],
+        queryFn: () => fetch("http://127.0.0.1:8000/chats").then((response) => response.json()),
+    });
+
+    if (data?.chats) {
+        return (
+            <div className="chat-list-container">
+                <h2>chats</h2>
+                <ChatList chats={data.chats} />
+            </div>
+        );
+    }
+
+    return <h2>chat list</h2>;
+}
+
+function ChatCardQueryContainer({ chatId }) {
+    if (!chatId) {
+        return <h2>pick a chat</h2>;
+    }
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { data } = useQuery({
+        queryKey: ["chats", chatId],
+        queryFn: () => fetch(`http://127.0.0.1:8000/chats/${chatId.id}`).then((response) => response.json()),
+    });
+
+    if (data && data.chat) {
+        return <ChatCardContainer chat={data.chat} />;
+    }
+
+    return <h2>loading...</h2>;
+}
 
 function Chats() {
     const { chatID } = useParams();
     return (
-        <div className="animals-page">
-            <h1>Chats Page {chatID}</h1>
-            <div>
-                <div>Column 1</div>
-                <div>Column 2</div>
-            </div>
+        <div className="chats-page">
+            <ChatListContainer></ChatListContainer>
+            <ChatCardQueryContainer chatID={chatID}></ChatCardQueryContainer>
         </div>
     );
 }

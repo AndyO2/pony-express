@@ -1,0 +1,16 @@
+.chats-page {
+    display: flex;
+    flex-direction: row;
+}
+
+.body {
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.column {
+    padding: 20px;
+    box-sizing: border-box;
+}
