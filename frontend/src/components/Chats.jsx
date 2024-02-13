@@ -43,9 +43,9 @@ function ChatCard({ chat }) {
 
 function ChatCardContainer({ chat }) {
     return (
-        <div className="animal-card-container">
+        <div className="chat-card-container">
             <h2>{chat.name}</h2>
-            <ChatCard animal={chat} />
+            <ChatCard chat={chat} />
         </div>
     );
 }

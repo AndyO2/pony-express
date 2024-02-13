@@ -3,14 +3,57 @@
     flex-direction: row;
 }
 
-.body {
-    margin: 0;
+.chat-list-container {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
+    max-height: 69vh;
+    margin: 0 20px;
 }
 
-.column {
-    padding: 20px;
-    box-sizing: border-box;
+.chat-list {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+.chat-list-item {
+    display: grid;
+    grid-template-columns: 20fr 8fr 2fr;
+    border: 1px solid lightblue;
+    border-radius: 3px;
+    margin: 5px 0;
+    padding: 10px;
+    align-items: center;
+    background-color: purple;
+    color: lightgreen;
+}
+
+.chat-list-item:hover {
+    background-color: blueviolet;
+    color: greenyellow;
+}
+
+.chat-list-item-name {
+    font-weight: bolder;
+}
+
+.chat-list-item-detail {
+    font-size: x-small;
+    color: orange
+}
+
+.chat-card-container {
+    margin: 0 20px;
+}
+
+.chat-card {
+    border: 4px solid indigo;
+    background-color: lightgreen;
+    color: purple;
+    box-shadow: 0 0 30px 0 yellow;
+}
+
+.chat-card-attr {
+    border: 1px dashed darkslateblue;
+    padding: 10px;
 }
