@@ -34,7 +34,7 @@ function ChatCard({ chat }) {
                 <div
                     key={attr}
                     className="chat-card-attr">
-                    {attr}: {chat[attr].toString()}
+                    {/* {attr}: {chat[attr].toString()} */}
                 </div>
             ))}
         </div>
@@ -68,15 +68,15 @@ function ChatListContainer() {
     return <h2>chat list</h2>;
 }
 
-function ChatCardQueryContainer({ chatId }) {
-    if (!chatId) {
+function ChatCardQueryContainer({ chatID }) {
+    if (!chatID) {
         return <h2>pick a chat</h2>;
     }
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { data } = useQuery({
-        queryKey: ["chats", chatId],
-        queryFn: () => fetch(`http://127.0.0.1:8000/chats/${chatId.id}`).then((response) => response.json()),
+        queryKey: ["chats", chatID],
+        queryFn: () => fetch(`http://127.0.0.1:8000/chats/${chatID}`).then((response) => response.json()),
     });
 
     if (data && data.chat) {

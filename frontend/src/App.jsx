@@ -23,7 +23,7 @@ function App() {
                         element={<Chats></Chats>}
                     />
                     <Route
-                        path="/chats/:chatId"
+                        path="/chats/:chatID"
                         element={<Chats></Chats>}
                     />
                     <Route
