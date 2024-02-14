@@ -23,7 +23,7 @@ function MessagesQueryContainer({ chatId }) {
 function MessagesListContainer({ messages }) {
     return (
         <div className="messages-card-container">
-            <h2>Messages</h2>
+            <h2>messages</h2>
             <MessagesList messages={messages}></MessagesList>
         </div>
     );
