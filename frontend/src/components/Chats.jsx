@@ -1,15 +1,39 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/prop-types */
 import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";
+import MessagesQueryContainer from "./Messages";
 import "./Chats.css";
 
-function ChatListItem({ chat }) {
+function Chats() {
+    const { chatId } = useParams();
     return (
-        <Link
-            key={chat.id}
-            to={`/chats/${chat.id}`}
-            className="chat-list-item"></Link>
+        <div className="chats-page">
+            <ChatListContainer></ChatListContainer>
+            <MessagesQueryContainer
+                className="chat-list-container"
+                chatId={chatId}
+            />
+        </div>
     );
+}
+
+function ChatListContainer() {
+    const { data } = useQuery({
+        queryKey: ["chats"],
+        queryFn: () => fetch("http://127.0.0.1:8000/chats").then((response) => response.json()),
+    });
+
+    if (data?.chats) {
+        return (
+            <div className="chat-list-container">
+                <h2>pony express</h2>
+                <ChatList chats={data.chats} />
+            </div>
+        );
+    }
+
+    return <h2>chat list</h2>;
 }
 
 function ChatList({ chats }) {
@@ -25,74 +49,33 @@ function ChatList({ chats }) {
     );
 }
 
-function ChatCard({ chat }) {
-    const attributes = ["kind", "age", "intake_date", "fixed", "vaccinated"];
+function ChatListItem({ chat }) {
+    const createdAtDate = new Date(chat.created_at);
 
-    return (
-        <div className="chat-card">
-            {attributes.map((attr) => (
-                <div
-                    key={attr}
-                    className="chat-card-attr">
-                    {/* {attr}: {chat[attr].toString()} */}
-                </div>
-            ))}
-        </div>
-    );
-}
-
-function ChatCardContainer({ chat }) {
-    return (
-        <div className="chat-card-container">
-            <h2>{chat.name}</h2>
-            <ChatCard chat={chat} />
-        </div>
-    );
-}
-
-function ChatListContainer() {
-    const { data } = useQuery({
-        queryKey: ["chats"],
-        queryFn: () => fetch("http://127.0.0.1:8000/chats").then((response) => response.json()),
+    // Format the date as "Month Day, Year"
+    const formattedDate = createdAtDate.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
     });
 
-    if (data?.chats) {
-        return (
-            <div className="chat-list-container">
-                <h2>chats</h2>
-                <ChatList chats={data.chats} />
-            </div>
-        );
-    }
-
-    return <h2>chat list</h2>;
-}
-
-function ChatCardQueryContainer({ chatID }) {
-    if (!chatID) {
-        return <h2>pick a chat</h2>;
-    }
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { data } = useQuery({
-        queryKey: ["chats", chatID],
-        queryFn: () => fetch(`http://127.0.0.1:8000/chats/${chatID}`).then((response) => response.json()),
-    });
-
-    if (data && data.chat) {
-        return <ChatCardContainer chat={data.chat} />;
-    }
-
-    return <h2>loading...</h2>;
-}
-
-function Chats() {
-    const { chatID } = useParams();
     return (
-        <div className="chats-page">
-            <ChatListContainer></ChatListContainer>
-            <ChatCardQueryContainer chatID={chatID}></ChatCardQueryContainer>
-        </div>
+        <Link
+            key={chat.id}
+            to={`/chats/${chat.id}`}
+            className="chat-list-item">
+            <div className="chat-list-item-title">{chat.name}</div>
+            <ul>
+                {chat.user_ids.map((userId, index) => (
+                    <li
+                        className="chat-list-item-detail"
+                        key={index}>
+                        {userId}
+                    </li>
+                ))}
+            </ul>
+            <div className="chat-list-item-detail">created at: {formattedDate}</div>
+        </Link>
     );
 }
 
