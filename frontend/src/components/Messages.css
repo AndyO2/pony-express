@@ -8,18 +8,26 @@
 .message-list-item {
     display: flex;
     flex-direction: column;
-    border: 1px solid lightblue;
+    border: 1px solid purple;
     border-radius: 3px;
     margin: 5px 0;
     padding: 10px;
-    background-color: purple;
-    color: lightgreen;
+    color: white;
 }
 
 .messages-list {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
+    border: 1px solid orange;
+}
+
+.chat-user {
+    color: orange;
+}
+
+.chat-date {
+    font-size: x-small;
 }
 
 .column {

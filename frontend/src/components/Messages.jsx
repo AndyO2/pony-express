@@ -42,12 +42,22 @@ function MessagesList({ messages }) {
 }
 
 function MessageCard({ message }) {
+    const createdAtDate = new Date(message.created_at);
+
+    // Format the date as "Month Day, Year"
+    const formattedDate = createdAtDate.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+    });
     return (
         <div className="message-list-item">
             <div className="column">
                 <div className="row">
-                    <div>{message.user_id}</div>
-                    <div>{message.created_at}</div>
+                    <div className="chat-user">{message.user_id}</div>
+                    <div className="chat-date">{formattedDate}</div>
                 </div>
                 <div className="row">
                     <div>{message.text}</div>
