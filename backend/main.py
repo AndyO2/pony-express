@@ -5,6 +5,7 @@ from starlette.responses import HTMLResponse
 
 from backend.routers.chats import chats_router
 from backend.routers.users import users_router
+from backend.auth import auth_router
 from backend.database import EntityNotFoundException
 
 from contextlib import asynccontextmanager
@@ -23,6 +24,7 @@ app = FastAPI(
 
 app.include_router(chats_router)
 app.include_router(users_router)
+app.include_router(auth_router)
 
 app.add_middleware(
     CORSMiddleware,

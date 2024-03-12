@@ -155,3 +155,17 @@ class GetMessagesForChat(BaseModel):
 class UsersInChatResponse(BaseModel):
     meta: Metadata
     users: list[UserInDB]
+
+
+#  auth ---------------------------
+class NewUser(SQLModel):
+    username: str
+    email: str
+    password: str
+
+
+class GetUserToken(SQLModel):
+    access_token: str
+    token_type: str
+    expires_in: int
+
