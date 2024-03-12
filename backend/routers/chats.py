@@ -1,12 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from backend import database as db
-from backend.entities import (
-    ChatCollection,
-    ChatResponse,
-    ChatUpdate,
-    UsersInChatResponse,
-    MessageCollection,
-)
+from backend.entities import *
 
 chats_router = APIRouter(prefix="/chats", tags=["Chats"])
 
@@ -29,7 +23,7 @@ def get_chats():
 
 
 @chats_router.get("/{chat_id}", status_code=200, response_model=ChatResponse)
-def get_chat_by_id(chat_id: str):
+def get_chat_by_id(chat_id: int):
     """
 
     :param chat_id: the chat id
@@ -50,7 +44,7 @@ def get_chat_by_id(chat_id: str):
 
 # PUT /chats/{chat_id} updates a chat for a given id.
 @chats_router.put("/{chat_id}", status_code=200, response_model=ChatResponse)
-def update_chat(chat_id: str, chat_update: ChatUpdate):
+def update_chat(chat_id: int, chat_update: ChatUpdate):
     """
 
     :param chat_id: the chat id
@@ -69,7 +63,7 @@ def update_chat(chat_id: str, chat_update: ChatUpdate):
     "/{chat_id}",
     status_code=204,
     response_model=None)
-def delete_chat(chat_id: str):
+def delete_chat(chat_id: int):
     """
 
     :param chat_id: the chat id
@@ -85,7 +79,7 @@ def delete_chat(chat_id: str):
 @chats_router.get(
     "/{chat_id}/messages",
     status_code=200)
-def get_messages_for_chat_id(chat_id: str):
+def get_messages_for_chat_id(chat_id: int):
     """
 
     :param chat_id: the chat id
@@ -108,7 +102,7 @@ def get_messages_for_chat_id(chat_id: str):
     "/{chat_id}/users",
     status_code=200,
 )
-def get_users_for_chat(chat_id: str) -> UsersInChatResponse:
+def get_users_for_chat(chat_id: int) -> UsersInChatResponse:
     """
 
     :param chat_id: id of the chat

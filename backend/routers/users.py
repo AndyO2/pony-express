@@ -1,12 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from backend import database as db
 
-from backend.entities import (
-    UserResponse,
-    UserCreate,
-    UserCollection,
-    ChatsForUserResponse,
-)
+from backend.entities import *
 
 users_router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -52,7 +47,7 @@ def create_user(user_create: UserCreate):
     status_code=200,
     response_model=UserResponse,
     description="get a user given a user_id")
-def get_user(user_id: str):
+def get_user(user_id: int):
     """
 
     :param user_id: the user id
@@ -69,7 +64,7 @@ def get_user(user_id: str):
     status_code=200,
     response_model=ChatsForUserResponse,
     description="return list of chats for a given user id")
-def get_user_chats(user_id: str):
+def get_user_chats(user_id: int):
     """
     :param user_id: the user_id
     :return: a list of chats for user
