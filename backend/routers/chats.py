@@ -102,12 +102,7 @@ def get_users_for_chat(chat_id: int, session: Session = Depends(db.get_session))
     """
     chat = db.get_chat_by_id(chat_id, session)
 
-    users = []
-    for user_id in sorted(chat.user_ids):
-        user = db.get_user_by_id(user_id, session)
-        users.append(user)
-
     return UsersInChatResponse(
-        meta={"count": len(users)},
-        users=users,
+        meta={"count": len(chat.users)},
+        users=sorted(chat.users),
     )
