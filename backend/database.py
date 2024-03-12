@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from backend.entities import *
 from sqlmodel import Session, SQLModel, create_engine, select
 
-from entities import ChatInDB
+from entities import ChatInDB, UserInDB
 
 # A3 ADDITIONS----------------------------
 engine = create_engine(
@@ -80,6 +80,19 @@ def get_user_by_id(user_id: int, session: Session) -> Type[UserInDB]:
         return user
 
     raise EntityNotFoundException(entity_name="User", entity_id=user_id)
+
+
+def update_user(session: Session, user: UserInDB, new_username: str = None, new_email: str = None) -> UserInDB:
+    if new_username:
+        setattr(user, "username", new_username)
+    if new_email:
+        setattr(user, "email", new_email)
+
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+    return user
 
 
 #   -------- chats --------   #
@@ -164,3 +177,4 @@ def get_messages_for_chat(chat_id: int, session: Session):
             ret.append(message)
 
     return ret
+
