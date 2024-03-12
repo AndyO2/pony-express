@@ -30,6 +30,15 @@ class UserUpdate(BaseModel):
     created_at: datetime
 
 
+class UserChatLinkInDB(SQLModel, table=True):
+    """Database model for many-to-many relation of users to chats."""
+
+    __tablename__ = "user_chat_links"
+
+    user_id: int = Field(foreign_key="users.id", primary_key=True)
+    chat_id: int = Field(foreign_key="chats.id", primary_key=True)
+
+
 # class UserInDB(BaseModel):
 #     """Represents a user in the database."""
 #
@@ -51,15 +60,6 @@ class UserInDB(SQLModel, table=True):
         back_populates="users",
         link_model=UserChatLinkInDB,
     )
-
-
-class UserChatLinkInDB(SQLModel, table=True):
-    """Database model for many-to-many relation of users to chats."""
-
-    __tablename__ = "user_chat_links"
-
-    user_id: int = Field(foreign_key="users.id", primary_key=True)
-    chat_id: int = Field(foreign_key="chats.id", primary_key=True)
 
 
 class UserResponse(BaseModel):

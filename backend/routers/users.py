@@ -25,23 +25,6 @@ def get_users(session: Session = Depends(db.get_session)):
     )
 
 
-# POST /users creates a new user
-@users_router.post(
-    "",
-    status_code=200,
-    response_model=UserResponse)
-def create_user(user_create: UserCreate, session: Session = Depends(db.get_session)):
-    """
-
-    :param session:
-    :param user_create: the user to create
-    :return: User Response
-    creates a new user
-
-    """
-    return UserResponse(user=db.create_user(user_create, session))
-
-
 # GET /users/{user_id} returns a user for a given id. If a user with the id exists, the response has status code 200
 # and adheres to the format:
 @users_router.get(
