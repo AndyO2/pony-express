@@ -80,6 +80,18 @@ class ExpiredToken(AuthException):
         )
 
 
+# Any route that requires a bearer token should have get_current_user as a dependency. This is accomplished by
+# including the following parameter in the function signature.
+# user: UserInDB = Depends(get_current_user)
+def get_current_user(
+        session: Session = Depends(db.get_session),
+        token: str = Depends(oauth2_scheme),
+) -> Type[UserInDB]:
+    """FastAPI dependency to get current user from bearer token."""
+    user = _decode_access_token(session, token)
+    return user
+
+
 # AUTH ROUTES -----------------------------------------
 @auth_router.post("/registration", response_model=UserInDB)
 def register_new_user(
