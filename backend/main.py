@@ -7,10 +7,18 @@ from backend.routers.chats import chats_router
 from backend.routers.users import users_router
 from backend.database import EntityNotFoundException
 
+from contextlib import asynccontextmanager
+from backend.database import create_db_and_tables
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_db_and_tables()
+    yield
+
 app = FastAPI(
     title="buddy system API",
     description="API for managing fosters and adoptions.",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 app.include_router(chats_router)
