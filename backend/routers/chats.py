@@ -62,23 +62,6 @@ def update_chat(chat_id: int, chat_update: ChatUpdate, session: Session = Depend
     )
 
 
-# DELETE /chats/{chat_id} deletes a chat for a given id
-@chats_router.delete(
-    "/{chat_id}",
-    status_code=204,
-    response_model=None)
-def delete_chat(chat_id: int, session: Session = Depends(db.get_session)):
-    """
-
-    :param session:
-    :param chat_id: the chat id
-    :return: nothing
-    deletes a chat
-
-    """
-    db.delete_chat(chat_id, session)
-
-
 # GET /chats/{chat_id}/messages returns a list of messages for a given chat id
 # alongside some metadata.
 @chats_router.get(

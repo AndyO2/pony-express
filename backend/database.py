@@ -5,6 +5,8 @@ from fastapi import HTTPException
 from backend.entities import *
 from sqlmodel import Session, SQLModel, create_engine, select
 
+from entities import ChatInDB
+
 # A3 ADDITIONS----------------------------
 engine = create_engine(
     "sqlite:///backend/pony_express.db",
@@ -80,7 +82,7 @@ def get_user_by_id(user_id: int, session: Session) -> Type[UserInDB]:
     raise EntityNotFoundException(entity_name="User", entity_id=user_id)
 
 
-#   -------- users --------   #
+#   -------- chats --------   #
 def get_all_chats(session: Session) -> Sequence[ChatInDB]:
     return session.exec(select(ChatInDB)).all()
 
@@ -100,7 +102,7 @@ def get_chats_by_user_id(user_id: int, session: Session) -> list[ChatInDB]:
     return ret
 
 
-def get_chat_by_id(chat_id: int, session: Session) -> ChatInDB:
+def get_chat_by_id(chat_id: int, session: Session) -> Type[ChatInDB]:
     """
     Retrieve a chat from the database.
 
@@ -108,14 +110,14 @@ def get_chat_by_id(chat_id: int, session: Session) -> ChatInDB:
     :param chat_id: the id of the chat
     :return: the retrieved chat
     """
-
-    if chat_id in DB["chats"]:
-        return ChatInDB(**DB["chats"][chat_id])
+    chat = session.get(ChatInDB, chat_id)
+    if chat:
+        return chat
 
     raise EntityNotFoundException(entity_name="Chat", entity_id=chat_id)
 
 
-def update_chat(chat_id: int, chat_update: ChatUpdate, session: Session) -> ChatInDB:
+def update_chat(chat_id: int, chat_update: ChatUpdate, session: Session) -> Type[ChatInDB]:
     """
     Update an animal in the database.
 
@@ -127,11 +129,12 @@ def update_chat(chat_id: int, chat_update: ChatUpdate, session: Session) -> Chat
     """
 
     chat = get_chat_by_id(chat_id, session)
-    if chat_update.name is not None:
-        chat.name = chat_update.name
+    for attr, val in chat_update.model_dump(exclude_unset=True).items():
+        setattr(chat, attr, val)
 
-    # update in database
-    DB["chats"][chat.id] = chat.model_dump()
+    session.add(chat)
+    session.commit()
+    session.refresh(chat)
 
     return chat
 
@@ -150,13 +153,14 @@ def delete_chat(chat_id: int, session: Session):
 
 
 def get_messages_for_chat(chat_id: int, session: Session):
-    if chat_id not in DB["chats"]:
+    chat = get_chat_by_id(chat_id, session)
+    if not chat:
         raise EntityNotFoundException(entity_name="Chat", entity_id=chat_id)
 
-    messages = []
-    for message in DB["chats"][chat_id]["messages"]:
-        messages.append(Message(id=message["id"],
-                                user_id=message["user_id"],
-                                text=message["text"],
-                                created_at=message["created_at"]))
-    return messages
+    ret = []
+    all_messages = session.exec(select(MessageInDB)).all()
+    for message in all_messages:
+        if message.chat_id == chat_id:
+            ret.append(message)
+
+    return ret

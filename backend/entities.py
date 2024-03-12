@@ -39,12 +39,6 @@ class UserChatLinkInDB(SQLModel, table=True):
     chat_id: int = Field(foreign_key="chats.id", primary_key=True)
 
 
-# class UserInDB(BaseModel):
-#     """Represents a user in the database."""
-#
-#     id: str
-#     created_at: datetime
-
 class UserInDB(SQLModel, table=True):
     """Database model for user."""
 
@@ -76,16 +70,6 @@ class UserCollection(BaseModel):
 
 
 # chats-----
-
-
-# class ChatInDB(BaseModel):
-#     id: str
-#     name: str
-#     user_ids: list[str]
-#     owner_id: str
-#     created_at: datetime
-
-
 class ChatInDB(SQLModel, table=True):
     """Database model for chat."""
 
