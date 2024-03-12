@@ -8,3 +8,5 @@ python-jose==3.3.0
 bcrypt==4.1.2
 cryptography==42.0.2
 python-multipart==0.0.9
+starlette~=0.32.0.post1
+pydantic~=2.6.1
