@@ -1,10 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session
 
-from auth import get_current_user
+from backend.auth import get_current_user
 from backend import database as db
 from backend.entities import *
-from database import EntityNotFoundException
 
 chats_router = APIRouter(prefix="/chats", tags=["Chats"])
 

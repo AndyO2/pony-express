@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from backend.entities import *
 from sqlmodel import Session, SQLModel, create_engine, select
 
-from entities import ChatInDB, UserInDB
+from backend.entities import ChatInDB, UserInDB
 
 # A3 ADDITIONS----------------------------
 engine = create_engine(

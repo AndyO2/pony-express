@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
 
-from auth import get_current_user
+from backend.auth import get_current_user
 from backend import database as db
 from backend.entities import *
 
