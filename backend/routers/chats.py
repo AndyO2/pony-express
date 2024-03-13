@@ -37,14 +37,16 @@ def get_chat_by_id(chat_id: int, session: Session = Depends(db.get_session)):
 
     """
     chat = db.get_chat_by_id(chat_id, session)
-    if chat is None:
-        error_detail = {
-            "type": "entity_not_found",
-            "entity_name": "Chat",
-            "entity_id": chat_id
-        }
-        raise HTTPException(status_code=404, detail=error_detail)
-    return ChatResponse(chat=chat)
+    chat_meta_data = ChatMetaData(
+        message_count=len(chat.messages),
+        user_count=len(chat.users)
+    )
+    return ChatResponse(
+        meta=chat_meta_data,
+        chat=chat,
+        messages=chat.messages,
+        users=chat.users
+    )
 
 
 # PUT /chats/{chat_id} updates a chat for a given id.
@@ -116,21 +118,21 @@ def get_users_for_chat(chat_id: int, session: Session = Depends(db.get_session))
 def create_message(
         session: Session = Depends(db.get_session),
         user: UserInDB = Depends(get_current_user),
-        chat_id: int = None,
-        text: str = None):
+        new_message_text: MessageCreate = None,
+        chat_id: int = None):
     """
 
+    :param new_message_text:
     :param session:
     :param user:
     :param chat_id:
-    :param text:
     :return:
     """
     # checks that chat exists (throws exception if not)
     db.get_chat_by_id(chat_id, session=session)
 
     test = {
-        "text": text,
+        "text": new_message_text.text,
         "user_id": user.id,
         "chat_id": chat_id
     }

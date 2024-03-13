@@ -4,31 +4,9 @@ from typing import Optional
 from sqlmodel import Field, Relationship, SQLModel
 
 
-class Metadata(BaseModel):
-    """Represents metadata for a collection."""
-
-    count: int
-
-
-class User(BaseModel):
-    """Represents an API response for a user."""
-
-    id: int
-    created_at: datetime
-
-
-class UserCreate(BaseModel):
-    """Represents parameters for adding a new user to the system."""
-
-    id: int
-
-
-class UserUpdate(BaseModel):
-    """Represents parameters for updating a user in the system."""
-
-    id: int
-    created_at: datetime
-
+# ------------------------------------- #
+#            database models            #
+# ------------------------------------- #
 
 class UserChatLinkInDB(SQLModel, table=True):
     """Database model for many-to-many relation of users to chats."""
@@ -56,20 +34,6 @@ class UserInDB(SQLModel, table=True):
     )
 
 
-class UserResponse(BaseModel):
-    """Represents an API response for a User."""
-
-    user: UserInDB
-
-
-class UserCollection(BaseModel):
-    """Represents an API response for a collection of users."""
-
-    meta: Metadata
-    users: list[UserInDB]
-
-
-# chats-----
 class ChatInDB(SQLModel, table=True):
     """Database model for chat."""
 
@@ -88,35 +52,6 @@ class ChatInDB(SQLModel, table=True):
     messages: list["MessageInDB"] = Relationship(back_populates="chat")
 
 
-class Chat(BaseModel):
-    chat: ChatInDB
-
-
-class ChatResponse(BaseModel):
-    """Represents an API response for a User."""
-
-    chat: ChatInDB
-
-
-class ChatsForUserResponse(BaseModel):
-    """Represents an API response for chats for user"""
-
-    meta: Metadata
-    chats: list[ChatInDB]
-
-
-class ChatCollection(BaseModel):
-    meta: Metadata
-    chats: list[ChatInDB]
-
-
-class ChatUpdate(BaseModel):
-    """Represents parameters for updating a chat in the system."""
-
-    name: str
-
-
-# messages-----------
 class MessageInDB(SQLModel, table=True):
     """Database model for message."""
 
@@ -131,6 +66,76 @@ class MessageInDB(SQLModel, table=True):
     user: UserInDB = Relationship()
     chat: ChatInDB = Relationship(back_populates="messages")
 
+
+# ------------------------------------- #
+#            request models             #
+# ------------------------------------- #
+
+
+# metadata
+class Metadata(BaseModel):
+    """Represents metadata for a collection."""
+
+    count: int
+
+
+class ChatMetaData(BaseModel):
+    message_count: int
+    user_count: int
+
+
+# users
+class UserCreate(BaseModel):
+    """Represents parameters for adding a new user to the system."""
+
+    id: int
+
+
+class UserUpdate(BaseModel):
+    """Represents parameters for updating a user in the system."""
+
+    id: int
+    created_at: datetime
+
+
+# messages
+class MessageCreate(BaseModel):
+    text: str
+
+
+# chats
+class ChatUpdate(BaseModel):
+    """Represents parameters for updating a chat in the system."""
+
+    name: str
+
+
+# ------------------------------------- #
+#            response models            #
+# ------------------------------------- #
+
+
+class User(BaseModel):
+    """Represents an API response for a user."""
+
+    id: int
+    created_at: datetime
+
+
+class UserResponse(BaseModel):
+    """Represents an API response for a User."""
+
+    user: UserInDB
+
+
+class UserCollection(BaseModel):
+    """Represents an API response for a collection of users."""
+
+    meta: Metadata
+    users: list[UserInDB]
+
+
+# messages-----------
 
 class Message(BaseModel):
     """Represents parameters for updating a chat in the system."""
@@ -150,10 +155,6 @@ class MessageResponse(BaseModel):
     message: MessageInDB
 
 
-class MessageCreate(BaseModel):
-    text: str
-
-
 class GetMessagesForChat(BaseModel):
     """Represents parameters for updating a chat in the system."""
     meta: Metadata
@@ -163,3 +164,30 @@ class GetMessagesForChat(BaseModel):
 class UsersInChatResponse(BaseModel):
     meta: Metadata
     users: list[UserInDB]
+
+
+# chats-----
+
+class Chat(BaseModel):
+    chat: ChatInDB
+
+
+class ChatResponse(BaseModel):
+    """Represents an API response for a User."""
+
+    meta: ChatMetaData
+    chat: ChatInDB
+    messages: Optional[list[MessageInDB]]
+    users: Optional[list[UserInDB]]
+
+
+class ChatsForUserResponse(BaseModel):
+    """Represents an API response for chats for user"""
+
+    meta: Metadata
+    chats: list[ChatInDB]
+
+
+class ChatCollection(BaseModel):
+    meta: Metadata
+    chats: list[ChatInDB]
