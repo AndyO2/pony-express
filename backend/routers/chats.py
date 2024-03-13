@@ -4,6 +4,7 @@ from sqlmodel import Session
 from auth import get_current_user
 from backend import database as db
 from backend.entities import *
+from database import EntityNotFoundException
 
 chats_router = APIRouter(prefix="/chats", tags=["Chats"])
 
@@ -117,8 +118,29 @@ def create_message(
         user: UserInDB = Depends(get_current_user),
         chat_id: int = None,
         text: str = None):
-    chat = db.get_chat_by_id(chat_id, session=session)
-    chat.messages.append(None)
+    """
+
+    :param session:
+    :param user:
+    :param chat_id:
+    :param text:
+    :return:
+    """
+    # checks that chat exists (throws exception if not)
+    db.get_chat_by_id(chat_id, session=session)
+
+    test = {
+        "text": text,
+        "user_id": user.id,
+        "chat_id": chat_id
+    }
+
+    message = MessageInDB(**test)
+
+    session.add(message)
+    session.commit()
+    session.refresh(message)
+
     return MessageResponse(
-        message=None
+        message=message
     )

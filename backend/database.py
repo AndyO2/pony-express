@@ -178,3 +178,9 @@ def get_messages_for_chat(chat_id: int, session: Session):
 
     return ret
 
+
+# messages ----------------------------
+def create_message(session: Session, chat_id: int, text: str):
+    chat = get_chat_by_id(chat_id, session)
+
+    pass
