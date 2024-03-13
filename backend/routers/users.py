@@ -19,10 +19,15 @@ def get_users(session: Session = Depends(db.get_session)):
 
     """
     users = db.get_all_users(session)
+    # ret = []
+    # for user in users:
+    #     print(user.hashed_password)
+    #     ret.append(User(id=user.id, email=user.email,
+    #                username=user.username, created_at=user.created_at))
 
     return UserCollection(
         meta={"count": len(users)},
-        users=sorted(users, key=lambda user: getattr(user, "id")),
+        users=users,
     )
 
 

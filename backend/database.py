@@ -38,7 +38,7 @@ class EntityNotFoundException(Exception):
 
 #   -------- users --------   #
 def get_all_users(session: Session) -> Sequence[UserInDB]:
-    return session.exec(select(UserInDB.id, UserInDB.username, UserInDB.email, UserInDB.created_at)).all()
+    return session.exec(select(UserInDB)).all()
 
 
 def create_user(user_create: UserCreate, session: Session) -> UserInDB:

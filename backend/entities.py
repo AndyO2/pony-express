@@ -25,7 +25,7 @@ class UserInDB(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(unique=True, index=True)
     email: str = Field(unique=True)
-    hashed_password: str
+    _hashed_password: str
     created_at: Optional[datetime] = Field(default_factory=datetime.now)
 
     chats: list["ChatInDB"] = Relationship(
@@ -119,6 +119,8 @@ class User(BaseModel):
     """Represents an API response for a user."""
 
     id: int
+    username: str
+    email: str
     created_at: datetime
 
 
