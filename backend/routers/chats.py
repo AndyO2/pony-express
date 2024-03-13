@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session
 
+from auth import get_current_user
 from backend import database as db
 from backend.entities import *
 
@@ -104,5 +105,20 @@ def get_users_for_chat(chat_id: int, session: Session = Depends(db.get_session))
 
     return UsersInChatResponse(
         meta={"count": len(chat.users)},
-        users=sorted(chat.users),
+        users=chat.users.sort(),
+    )
+
+
+# POST /chats/{chat_id}/messages creates a new message in the chat, authored by the current user. It requires a valid
+# bearer token. The request body adheres to the format:
+@chats_router.post("/{chat_id}/messages", status_code=201)
+def create_message(
+        session: Session = Depends(db.get_session),
+        user: UserInDB = Depends(get_current_user),
+        chat_id: int = None,
+        text: str = None):
+    chat = db.get_chat_by_id(chat_id, session=session)
+    chat.messages.append(None)
+    return MessageResponse(
+        message=None
     )

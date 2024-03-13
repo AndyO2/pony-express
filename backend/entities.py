@@ -146,6 +146,14 @@ class MessageCollection(BaseModel):
     messages: list[Message]
 
 
+class MessageResponse(BaseModel):
+    message: MessageInDB
+
+
+class MessageCreate(BaseModel):
+    text: str
+
+
 class GetMessagesForChat(BaseModel):
     """Represents parameters for updating a chat in the system."""
     meta: Metadata
