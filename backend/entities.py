@@ -25,7 +25,7 @@ class UserInDB(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(unique=True, index=True)
     email: str = Field(unique=True)
-    _hashed_password: str
+    hashed_password: str
     created_at: Optional[datetime] = Field(default_factory=datetime.now)
 
     chats: list["ChatInDB"] = Relationship(
@@ -115,7 +115,7 @@ class ChatUpdate(BaseModel):
 # ------------------------------------- #
 
 
-class User(BaseModel):
+class User(SQLModel):
     """Represents an API response for a user."""
 
     id: int
@@ -127,14 +127,14 @@ class User(BaseModel):
 class UserResponse(BaseModel):
     """Represents an API response for a User."""
 
-    user: UserInDB
+    user: User
 
 
 class UserCollection(BaseModel):
     """Represents an API response for a collection of users."""
 
     meta: Metadata
-    users: list[UserInDB]
+    users: list[User]
 
 
 # messages-----------
@@ -154,7 +154,7 @@ class MessageCollection(BaseModel):
 
 
 class MessageResponse(BaseModel):
-    message: MessageInDB
+    message: Message
 
 
 class GetMessagesForChat(BaseModel):
@@ -165,31 +165,34 @@ class GetMessagesForChat(BaseModel):
 
 class UsersInChatResponse(BaseModel):
     meta: Metadata
-    users: list[UserInDB]
+    users: list[User]
 
 
 # chats-----
 
-class Chat(BaseModel):
-    chat: ChatInDB
+class Chat(SQLModel):
+    id: str
+    name: str
+    owner: User
+    created_at: datetime
 
 
 class ChatResponse(BaseModel):
     """Represents an API response for a User."""
 
     meta: ChatMetaData
-    chat: ChatInDB
-    messages: Optional[list[MessageInDB]]
-    users: Optional[list[UserInDB]]
+    chat: Chat
+    messages: Optional[list[Message]]
+    users: Optional[list[User]]
 
 
 class ChatsForUserResponse(BaseModel):
     """Represents an API response for chats for user"""
 
     meta: Metadata
-    chats: list[ChatInDB]
+    chats: list[Chat]
 
 
 class ChatCollection(BaseModel):
     meta: Metadata
-    chats: list[ChatInDB]
+    chats: list[Chat]

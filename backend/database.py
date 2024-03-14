@@ -67,7 +67,7 @@ def create_user(user_create: UserCreate, session: Session) -> UserInDB:
     return user
 
 
-def get_user_by_id(user_id: int, session: Session) -> Type[UserInDB]:
+def get_user_by_id(user_id: int, session: Session) -> User:
     """
     Retrieve a user from the database.
 

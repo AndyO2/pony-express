@@ -10,7 +10,7 @@ from pydantic import BaseModel, ValidationError
 from sqlmodel import Session, SQLModel, select
 
 from backend import database as db
-from backend.entities import UserInDB
+from backend.entities import User, UserInDB
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 access_token_duration = 3600  # seconds
@@ -93,7 +93,7 @@ def get_current_user(
 
 
 # AUTH ROUTES -----------------------------------------
-@auth_router.post("/registration", response_model=UserInDB)
+@auth_router.post("/registration", response_model=User)
 def register_new_user(
         registration: UserRegistration,
         # session: Session = Depends(db.get_session),
@@ -138,9 +138,11 @@ def _get_authenticated_user(
 
 
 def _build_access_token(user: UserInDB) -> AccessToken:
-    expiration = int(datetime.now(timezone.utc).timestamp()) + access_token_duration
+    expiration = int(datetime.now(timezone.utc).timestamp()) + \
+        access_token_duration
     claims = Claims(sub=str(user.id), exp=expiration)
-    access_token = jwt.encode(claims.model_dump(), key=jwt_key, algorithm=jwt_alg)
+    access_token = jwt.encode(
+        claims.model_dump(), key=jwt_key, algorithm=jwt_alg)
 
     return AccessToken(
         access_token=access_token,
