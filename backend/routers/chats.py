@@ -10,7 +10,7 @@ chats_router = APIRouter(prefix="/chats", tags=["Chats"])
 
 # GET /chats returns a list of chats sorted by name alongside some metadata.
 # The metadata has the count of chats (integer). The response has the HTTP status code 200
-@chats_router.get("", status_code=200, response_model=ChatCollection)
+@chats_router.get("", response_model=ChatCollection)
 def get_chats(session: Session = Depends(db.get_session)):
     """
 
@@ -21,7 +21,7 @@ def get_chats(session: Session = Depends(db.get_session)):
     chats = db.get_all_chats(session)
     return ChatCollection(
         meta={"count": len(chats)},
-        chats=sorted(chats, key=lambda chat: getattr(chat, "name")),
+        chats=chats,
     )
 
 

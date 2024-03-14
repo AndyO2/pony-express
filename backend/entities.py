@@ -171,7 +171,7 @@ class UsersInChatResponse(BaseModel):
 # chats-----
 
 class Chat(SQLModel):
-    id: str
+    id: int
     name: str
     owner: User
     created_at: datetime

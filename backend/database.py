@@ -96,7 +96,7 @@ def update_user(session: Session, user: UserInDB, new_username: str = None, new_
 
 
 #   -------- chats --------   #
-def get_all_chats(session: Session) -> Sequence[ChatInDB]:
+def get_all_chats(session: Session) -> list[ChatInDB]:
     return session.exec(select(ChatInDB)).all()
 
 
