@@ -85,13 +85,13 @@ class ChatMetaData(BaseModel):
 
 
 # users
-class UserCreate(BaseModel):
+class UserCreate(SQLModel):
     """Represents parameters for adding a new user to the system."""
 
     id: int
 
 
-class UserUpdate(BaseModel):
+class UserUpdate(SQLModel):
     """Represents parameters for updating a user in the system."""
 
     id: int
@@ -99,12 +99,12 @@ class UserUpdate(BaseModel):
 
 
 # messages
-class MessageCreate(BaseModel):
+class MessageCreate(SQLModel):
     text: str
 
 
 # chats
-class ChatUpdate(BaseModel):
+class ChatUpdate(SQLModel):
     """Represents parameters for updating a chat in the system."""
 
     name: str
@@ -180,10 +180,14 @@ class Chat(SQLModel):
 class ChatResponse(BaseModel):
     """Represents an API response for a User."""
 
+    chat: Chat
+
+
+class ChatByIDResponse(BaseModel):
     meta: ChatMetaData
     chat: Chat
-    messages: Optional[list[Message]]
-    users: Optional[list[User]]
+    messages: list[Message]
+    users: list[User]
 
 
 class ChatsForUserResponse(BaseModel):

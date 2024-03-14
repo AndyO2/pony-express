@@ -25,7 +25,10 @@ def get_chats(session: Session = Depends(db.get_session)):
     )
 
 
-@chats_router.get("/{chat_id}", status_code=200, response_model=ChatResponse)
+@chats_router.get(
+    "/{chat_id}",
+    status_code=200,
+    response_model=ChatByIDResponse)
 def get_chat_by_id(chat_id: int, session: Session = Depends(db.get_session)):
     """
 
@@ -40,7 +43,7 @@ def get_chat_by_id(chat_id: int, session: Session = Depends(db.get_session)):
         message_count=len(chat.messages),
         user_count=len(chat.users)
     )
-    return ChatResponse(
+    return ChatByIDResponse(
         meta=chat_meta_data,
         chat=chat,
         messages=chat.messages,
@@ -69,7 +72,8 @@ def update_chat(chat_id: int, chat_update: ChatUpdate, session: Session = Depend
 # alongside some metadata.
 @chats_router.get(
     "/{chat_id}/messages",
-    status_code=200)
+    status_code=200,
+    response_model=MessageCollection)
 def get_messages_for_chat_id(chat_id: int, session: Session = Depends(db.get_session)):
     """
 
@@ -93,6 +97,7 @@ def get_messages_for_chat_id(chat_id: int, session: Session = Depends(db.get_ses
 @chats_router.get(
     "/{chat_id}/users",
     status_code=200,
+    response_model=UsersInChatResponse
 )
 def get_users_for_chat(chat_id: int, session: Session = Depends(db.get_session)) -> UsersInChatResponse:
     """
@@ -113,7 +118,10 @@ def get_users_for_chat(chat_id: int, session: Session = Depends(db.get_session))
 
 # POST /chats/{chat_id}/messages creates a new message in the chat, authored by the current user. It requires a valid
 # bearer token. The request body adheres to the format:
-@chats_router.post("/{chat_id}/messages", status_code=201)
+@chats_router.post(
+    "/{chat_id}/messages",
+    status_code=201,
+    response_model=MessageResponse)
 def create_message(
         session: Session = Depends(db.get_session),
         user: UserInDB = Depends(get_current_user),
