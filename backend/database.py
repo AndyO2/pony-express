@@ -67,7 +67,7 @@ def create_user(user_create: UserCreate, session: Session) -> UserInDB:
     return user
 
 
-def get_user_by_id(user_id: int, session: Session) -> User:
+def get_user_by_id(user_id: int, session: Session) -> UserInDB:
     """
     Retrieve a user from the database.
 
@@ -100,19 +100,16 @@ def get_all_chats(session: Session) -> list[ChatInDB]:
     return session.exec(select(ChatInDB)).all()
 
 
-def get_chats_by_user_id(user_id: int, session: Session) -> list[ChatInDB]:
-    user = session.get(UserInDB, user_id)
-    if not user:
-        raise EntityNotFoundException(entity_name="User", entity_id=user_id)
+def get_chats_by_user_id(user_id: int, session: Session) -> list[Chat]:
+    # check if user exists
+    user = get_user_by_id(user_id)
 
-    ret = []
-    chats = get_all_chats(session)
+    statement = select(ChatInDB).where(
+        user in ChatInDB.users
+    ).all()
+    chats = session.exec(select(statement))
 
-    for chat in chats:
-        if user_id in chat.users:
-            ret.append(chat)
-
-    return ret
+    return chats
 
 
 def get_chat_by_id(chat_id: int, session: Session) -> Type[ChatInDB]:
