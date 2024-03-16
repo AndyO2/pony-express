@@ -143,7 +143,6 @@ def get_access_token(
         session: Session = Depends(db.get_session),
 ):
     """Get access token for user."""
-
     user = _get_authenticated_user(session, form)
     return _build_access_token(user)
 
@@ -152,6 +151,7 @@ def _get_authenticated_user(
         session: Session,
         form: OAuth2PasswordRequestForm,
 ) -> UserInDB:
+    # check if a user with form username exists
     user = session.exec(
         select(UserInDB).where(UserInDB.username == form.username)
     ).first()
