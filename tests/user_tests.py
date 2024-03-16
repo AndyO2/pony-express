@@ -1,8 +1,8 @@
-# from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient
 
-# from backend.main import app
+from backend.main import app
 
-# client = TestClient(app)
+client = TestClient(app)
 
 
 # User Endpoint Tests

@@ -102,15 +102,7 @@ def get_all_chats(session: Session) -> list[ChatInDB]:
 
 def get_chats_by_user_id(user_id: int, session: Session) -> list[Chat]:
     # check if user exists
-    user = get_user_by_id(user_id)
-
-    # statement = (
-    #     select(ChatInDB)
-    #     .join(UserChatLinkInDB)
-    #     .join(UserInDB)
-    #     .filter(UserInDB.id == user_id)
-    # )
-    # chats = session.exec(statement)
+    user = session.exec(select(UserInDB).where(UserInDB.id == user_id)).one()
 
     return user.chats
 
