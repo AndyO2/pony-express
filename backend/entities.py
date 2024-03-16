@@ -141,9 +141,11 @@ class UserCollection(BaseModel):
 
 class Message(SQLModel):
     id: int
-    user_id: int
     text: str
+    user_id: int
+    chat_id: int
     created_at: datetime
+    user: User
 
 
 class MessageCollection(BaseModel):
@@ -184,8 +186,8 @@ class ChatResponse(BaseModel):
 class ChatByIDResponse(BaseModel):
     meta: ChatMetaData
     chat: Chat
-    messages: list[Message]
-    users: list[User]
+    messages: Optional[list[Message]] = None
+    users: Optional[list[User]] = None
 
 
 class ChatsForUserResponse(BaseModel):

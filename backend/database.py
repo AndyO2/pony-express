@@ -109,7 +109,7 @@ def get_chats_by_user_id(user_id: int, session: Session) -> list[ChatInDB]:
     return user.chats
 
 
-def get_chat_by_id(chat_id: int, session: Session) -> Type[ChatInDB]:
+def get_chat_by_id(chat_id: int, session: Session) -> ChatInDB:
     """
     Retrieve a chat from the database.
 

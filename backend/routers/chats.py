@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, Depends
+from typing import List
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlmodel import Session
 
 from backend.auth import get_current_user
@@ -28,8 +29,12 @@ def get_chats(session: Session = Depends(db.get_session)):
 @chats_router.get(
     "/{chat_id}",
     status_code=200,
-    response_model=ChatByIDResponse)
-def get_chat_by_id(chat_id: int, session: Session = Depends(db.get_session)):
+    response_model=ChatByIDResponse,
+    response_model_exclude_none=True)
+def get_chat_by_id(
+        chat_id: int,
+        include: List[str] = Query(None),
+        session: Session = Depends(db.get_session)):
     """
 
     :param session:
@@ -43,15 +48,22 @@ def get_chat_by_id(chat_id: int, session: Session = Depends(db.get_session)):
         message_count=len(chat.messages),
         user_count=len(chat.users)
     )
-    return ChatByIDResponse(
+    ret = ChatByIDResponse(
         meta=chat_meta_data,
         chat=chat,
-        messages=chat.messages,
-        users=chat.users
     )
 
+    if "messages" in include:
+        ret.messages = sorted(chat.messages, key=lambda message: getattr(
+            message, "created_at")),
+    if "users" in include:
+        ret.users = chat.users
+
+    return ret
 
 # PUT /chats/{chat_id} updates a chat for a given id.
+
+
 @chats_router.put("/{chat_id}", status_code=200, response_model=ChatResponse)
 def update_chat(chat_id: int, chat_update: ChatUpdate, session: Session = Depends(db.get_session)):
     """
@@ -69,7 +81,7 @@ def update_chat(chat_id: int, chat_update: ChatUpdate, session: Session = Depend
 
 
 # GET /chats/{chat_id}/messages returns a list of messages for a given chat id
-# alongside some metadata.
+# alongside some metadata. sort by created at
 @chats_router.get(
     "/{chat_id}/messages",
     status_code=200,
