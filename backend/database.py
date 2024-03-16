@@ -107,7 +107,7 @@ def get_chats_by_user_id(user_id: int, session: Session) -> list[Chat]:
     statement = select(ChatInDB).where(
         user in ChatInDB.users
     ).all()
-    chats = session.exec(select(statement))
+    chats = session.exec(statement)
 
     return chats
 
