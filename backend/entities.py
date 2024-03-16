@@ -139,8 +139,7 @@ class UserCollection(BaseModel):
 
 # messages-----------
 
-class Message(BaseModel):
-    """Represents parameters for updating a chat in the system."""
+class Message(SQLModel):
     id: int
     user_id: int
     text: str
@@ -148,7 +147,6 @@ class Message(BaseModel):
 
 
 class MessageCollection(BaseModel):
-    """Represents parameters for updating a chat in the system."""
     meta: Metadata
     messages: list[Message]
 

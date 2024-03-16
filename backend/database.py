@@ -7,6 +7,8 @@ from sqlmodel import Session, SQLModel, create_engine, select
 
 from backend.entities import ChatInDB, UserInDB
 
+# DB funcs should return SQL Models (Routes should return BaseModel)
+
 # A3 ADDITIONS----------------------------
 engine = create_engine(
     "sqlite:///backend/pony_express.db",
@@ -100,7 +102,7 @@ def get_all_chats(session: Session) -> list[ChatInDB]:
     return session.exec(select(ChatInDB)).all()
 
 
-def get_chats_by_user_id(user_id: int, session: Session) -> list[Chat]:
+def get_chats_by_user_id(user_id: int, session: Session) -> list[ChatInDB]:
     # check if user exists
     user = session.exec(select(UserInDB).where(UserInDB.id == user_id)).one()
 
@@ -157,18 +159,16 @@ def delete_chat(chat_id: int, session: Session):
     del DB["chats"][chat.id]
 
 
-def get_messages_for_chat(chat_id: int, session: Session):
+def get_messages_in_chat(chat_id: int, session: Session) -> list[MessageInDB]:
     chat = get_chat_by_id(chat_id, session)
-    if not chat:
-        raise EntityNotFoundException(entity_name="Chat", entity_id=chat_id)
 
-    ret = []
-    all_messages = session.exec(select(MessageInDB)).all()
-    for message in all_messages:
-        if message.chat_id == chat_id:
-            ret.append(message)
+    return chat.messages
 
-    return ret
+
+def get_users_in_chat(chat_id: int, session: Session) -> list[UserInDB]:
+    chat = get_chat_by_id(chat_id, session)
+
+    return chat.users
 
 
 # messages ----------------------------

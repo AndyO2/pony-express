@@ -83,7 +83,7 @@ def get_messages_for_chat_id(chat_id: int, session: Session = Depends(db.get_ses
     returns a list of messages for a given chat id
 
     """
-    messages = db.get_messages_for_chat(chat_id, session)
+    messages = db.get_messages_in_chat(chat_id, session)
 
     return MessageCollection(
         meta={"count": len(messages)},
@@ -108,11 +108,10 @@ def get_users_for_chat(chat_id: int, session: Session = Depends(db.get_session))
     returns a list of users for a given chat
 
     """
-    chat = db.get_chat_by_id(chat_id, session)
-
+    users = db.get_users_in_chat(chat_id, session)
     return UsersInChatResponse(
-        meta={"count": len(chat.users)},
-        users=chat.users.sort(),
+        meta={"count": len(users)},
+        users=users,
     )
 
 
