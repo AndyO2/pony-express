@@ -1,12 +1,12 @@
-from fastapi.testclient import TestClient
+# from fastapi.testclient import TestClient
 
-from backend.main import app
+# from backend.main import app
 
-client = TestClient(app)
+# client = TestClient(app)
 
 
 # User Endpoint Tests
-def test_get_all_users():
+def test_get_all_users(client):
     response = client.get("/users")
     assert response.status_code == 200
 
@@ -16,7 +16,7 @@ def test_get_all_users():
     assert users == sorted(users, key=lambda user: user["id"])
 
 
-def test_create_user():
+def test_create_user(client):
     create_params = {
         "id": "bob",
     }
@@ -38,7 +38,7 @@ def test_create_user():
         assert user[key] == value
 
 
-def test_create_user_duplicate():
+def test_create_user_duplicate(client):
     create_params = {
         "id": "bishop",
     }
@@ -46,7 +46,7 @@ def test_create_user_duplicate():
     assert response.status_code == 422
 
 
-def test_get_user():
+def test_get_user(client):
     user_id = "bishop"
     expected_user = {
         "id": user_id,
