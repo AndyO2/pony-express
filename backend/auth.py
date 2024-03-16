@@ -1,6 +1,7 @@
 import os
 from datetime import datetime, timezone
-from typing import Annotated, Type
+from typing import Annotated, Dict, Type
+from typing_extensions import Annotated, Doc
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -43,6 +44,19 @@ class Claims(BaseModel):
 
     sub: str  # id of user
     exp: int  # unix timestamp
+
+
+class DuplicateEntryException(HTTPException):
+    def __init__(self, entity_name: str, entity_field: str, entity_value: str):
+        super().__init__(
+            status_code=422,
+            detail={
+                "error": "duplicate_value",
+                "entity_name": entity_name,
+                "entity_field": entity_field,
+                "entity_value": entity_value
+            },
+        )
 
 
 class AuthException(HTTPException):
@@ -103,24 +117,15 @@ def register_new_user(
         session: Annotated[Session, Depends(db.get_session)],
 ):
     """Register new user."""
-    # user_exists = check_user_exists(
-    #     session, registration.username, registration.email)
-    # if user_exists == "username":
-    #     detail = {
-    #         "type": "duplicate_value",
-    #         "entity_name": "User",
-    #         "entity_field": user_exists,
-    #         "entity_value": registration.username
-    #     }
-    #     return HTTPException(status_code=422, detail=detail)
-    # elif user_exists == "email":
-    #     detail = {
-    #         "type": "duplicate_value",
-    #         "entity_name": "User",
-    #         "entity_field": user_exists,
-    #         "entity_value": registration.email
-    #     }
-    #     return HTTPException(status_code=422, detail=detail)
+    same_username = session.exec(select(UserInDB).where(
+        UserInDB.username == registration.username)).first()
+    if same_username:
+        return DuplicateEntryException("User", "username", registration.username)
+
+    same_email = session.exec(select(UserInDB).where(
+        UserInDB.email == registration.email)).first()
+    if same_email:
+        return DuplicateEntryException("User", "email", registration.email)
 
     hashed_password = pwd_context.hash(registration.password)
     user = UserInDB(
