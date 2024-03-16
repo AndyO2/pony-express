@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
 
-from backend.auth import get_current_user
+from backend.auth import AuthException, get_current_user
 from backend import database as db
 from backend.entities import *
 
@@ -68,10 +68,16 @@ def get_user_chats(user_id: int, session: Session = Depends(db.get_session)):
 
 # GET /users/me returns the current user. It requires a valid bearer token. If the token is valid, the response has
 # HTTP status code 200 and the response adheres to the format:
-@users_router.get("/me", response_model=UserResponse)
+@users_router.get(
+    "/me",
+    response_model=UserResponse,
+    status_code=200)
 def get_self(user: UserInDB = Depends(get_current_user)):
     """Get current user."""
-    return UserResponse(user=user)
+    if user:
+        return UserResponse(user=user)
+    else:
+        raise AuthException()
 
 
 # PUT /users/me can be used to update the username or email of the current user. It requires a valid bearer token.
