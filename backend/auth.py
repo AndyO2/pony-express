@@ -93,13 +93,34 @@ def get_current_user(
 
 
 # AUTH ROUTES -----------------------------------------
-@auth_router.post("/registration", response_model=User)
+@auth_router.post(
+    "/registration",
+    response_model=User,
+    status_code=201)
 def register_new_user(
         registration: UserRegistration,
         # session: Session = Depends(db.get_session),
         session: Annotated[Session, Depends(db.get_session)],
 ):
     """Register new user."""
+    user_exists = check_user_exists(
+        session, registration.username, registration.email)
+    if user_exists == "username":
+        detail = {
+            "type": "duplicate_value",
+            "entity_name": "User",
+            "entity_field": user_exists,
+            "entity_value": registration.username
+        }
+        return HTTPException(status_code=422, detail=detail)
+    elif user_exists == "email":
+        detail = {
+            "type": "duplicate_value",
+            "entity_name": "User",
+            "entity_field": user_exists,
+            "entity_value": registration.email
+        }
+        return HTTPException(status_code=422, detail=detail)
 
     hashed_password = pwd_context.hash(registration.password)
     user = UserInDB(
@@ -168,3 +189,16 @@ def _decode_access_token(session: Session, token: str) -> Type[UserInDB]:
         raise InvalidToken()
     except ValidationError():
         raise InvalidToken()
+
+
+def check_user_exists(session: Session, username: str, email: str) -> str:
+    statement = select(UserInDB).where(UserInDB.username == username)
+    user = session.exec(statement).first()
+    if user is not None:
+        return "username"
+    statement = select(UserInDB).where(UserInDB.email == email)
+    user = session.exec(statement).first()
+    if user is not None:
+        return "email"
+    else:
+        return ""
