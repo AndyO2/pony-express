@@ -46,19 +46,6 @@ class Claims(BaseModel):
     exp: int  # unix timestamp
 
 
-class DuplicateEntryException(HTTPException):
-    def __init__(self, entity_name: str, entity_field: str, entity_value: str):
-        super().__init__(
-            status_code=422,
-            detail={
-                "error": "duplicate_value",
-                "entity_name": entity_name,
-                "entity_field": entity_field,
-                "entity_value": entity_value
-            },
-        )
-
-
 class AuthException(HTTPException):
     def __init__(self, error: str, description: str):
         super().__init__(
@@ -120,12 +107,24 @@ def register_new_user(
     same_username = session.exec(select(UserInDB).where(
         UserInDB.username == registration.username)).first()
     if same_username:
-        return DuplicateEntryException("User", "username", registration.username)
+        detail = {
+            "type": "duplicate_value",
+            "entity_name": "User",
+            "entity_field": "username",
+            "entity_value": registration.username
+        }
+        raise HTTPException(status_code=422, detail=detail)
 
     same_email = session.exec(select(UserInDB).where(
         UserInDB.email == registration.email)).first()
     if same_email:
-        return DuplicateEntryException("User", "email", registration.email)
+        detail = {
+            "type": "duplicate_value",
+            "entity_name": "User",
+            "entity_field": "email",
+            "entity_value": registration.email
+        }
+        raise HTTPException(status_code=422, detail=detail)
 
     hashed_password = pwd_context.hash(registration.password)
     user = UserInDB(
