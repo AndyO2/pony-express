@@ -25,25 +25,6 @@ def get_users(session: Session = Depends(db.get_session)):
     )
 
 
-# GET /users/{user_id} returns a user for a given id. If a user with the id exists, the response has status code 200
-# and adheres to the format:
-@users_router.get(
-    "/{user_id}",
-    status_code=200,
-    response_model=UserResponse,
-    description="get a user given a user_id")
-def get_user(user_id: int, session: Session = Depends(db.get_session)):
-    """
-
-    :param session:
-    :param user_id: the user id
-    :return: UserResponse
-    returns a user for a given id
-
-    """
-    return UserResponse(user=db.get_user_by_id(user_id, session))
-
-
 # GET /users/{user_id}/chats returns a list of chats for a given user id alongside some metadata.
 @users_router.get(
     "/{user_id}/chats",
@@ -91,3 +72,23 @@ def get_self(
     """update user."""
 
     return UserResponse(user=db.update_user(session, user.id, user_update))
+
+# GET /users/{user_id} returns a user for a given id. If a user with the id exists, the response has status code 200
+# and adheres to the format:
+
+
+@users_router.get(
+    "/{user_id}",
+    status_code=200,
+    response_model=UserResponse,
+    description="get a user given a user_id")
+def get_user(user_id: int, session: Session = Depends(db.get_session)):
+    """
+
+    :param session:
+    :param user_id: the user id
+    :return: UserResponse
+    returns a user for a given id
+
+    """
+    return UserResponse(user=db.get_user_by_id(user_id, session))
