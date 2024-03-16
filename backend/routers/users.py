@@ -47,8 +47,24 @@ def get_user_chats(user_id: int, session: Session = Depends(db.get_session)):
     )
 
 
+# PUT /users/me can be used to update the username or email of the current user. It requires a valid bearer token.
+# The request body has two optional fields username and email, ie, it is of the form
+
+
+@users_router.put("/me", status_code=200, response_model=UserResponse)
+def get_self(
+    user_update: UserUpdate,
+    user: UserInDB = Depends(get_current_user),
+    session: Session = Depends(db.get_session)
+):
+    """update user."""
+
+    return UserResponse(user=db.update_user(session, user.id, user_update))
+
 # GET /users/me returns the current user. It requires a valid bearer token. If the token is valid, the response has
 # HTTP status code 200
+
+
 @users_router.get(
     "/me",
     response_model=UserResponse,
@@ -60,18 +76,6 @@ def get_self(user: UserInDB = Depends(get_current_user)):
     else:
         raise AuthException()
 
-
-# PUT /users/me can be used to update the username or email of the current user. It requires a valid bearer token.
-# The request body has two optional fields username and email, ie, it is of the form
-@users_router.put("/me", status_code=200, response_model=UserResponse)
-def get_self(
-    user_update: UserUpdate,
-    user: UserInDB = Depends(get_current_user),
-    session: Session = Depends(db.get_session)
-):
-    """update user."""
-
-    return UserResponse(user=db.update_user(session, user.id, user_update))
 
 # GET /users/{user_id} returns a user for a given id. If a user with the id exists, the response has status code 200
 # and adheres to the format:
