@@ -84,11 +84,10 @@ def get_self(user: UserInDB = Depends(get_current_user)):
 # The request body has two optional fields username and email, ie, it is of the form
 @users_router.put("/me", status_code=200, response_model=UserResponse)
 def get_self(
+    user_update: UserUpdate,
     user: UserInDB = Depends(get_current_user),
-    new_username: str = None,
-    new_email: str = None,
     session: Session = Depends(db.get_session)
 ):
     """update user."""
 
-    return UserResponse(user=db.update_user(session, user, new_username, new_email))
+    return UserResponse(user=db.update_user(session, user, user_update))

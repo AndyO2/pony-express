@@ -94,8 +94,8 @@ class UserCreate(SQLModel):
 class UserUpdate(SQLModel):
     """Represents parameters for updating a user in the system."""
 
-    id: int
-    created_at: datetime
+    username: str
+    email: str
 
 
 # messages

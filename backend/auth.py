@@ -82,7 +82,7 @@ class InvalidToken(AuthException):
     def __init__(self):
         super().__init__(
             error="invalid_client",
-            description="invalid bearer token",
+            description="invalid access token",
         )
 
 
