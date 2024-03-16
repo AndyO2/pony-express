@@ -103,24 +103,24 @@ def register_new_user(
         session: Annotated[Session, Depends(db.get_session)],
 ):
     """Register new user."""
-    user_exists = check_user_exists(
-        session, registration.username, registration.email)
-    if user_exists == "username":
-        detail = {
-            "type": "duplicate_value",
-            "entity_name": "User",
-            "entity_field": user_exists,
-            "entity_value": registration.username
-        }
-        return HTTPException(status_code=422, detail=detail)
-    elif user_exists == "email":
-        detail = {
-            "type": "duplicate_value",
-            "entity_name": "User",
-            "entity_field": user_exists,
-            "entity_value": registration.email
-        }
-        return HTTPException(status_code=422, detail=detail)
+    # user_exists = check_user_exists(
+    #     session, registration.username, registration.email)
+    # if user_exists == "username":
+    #     detail = {
+    #         "type": "duplicate_value",
+    #         "entity_name": "User",
+    #         "entity_field": user_exists,
+    #         "entity_value": registration.username
+    #     }
+    #     return HTTPException(status_code=422, detail=detail)
+    # elif user_exists == "email":
+    #     detail = {
+    #         "type": "duplicate_value",
+    #         "entity_name": "User",
+    #         "entity_field": user_exists,
+    #         "entity_value": registration.email
+    #     }
+    #     return HTTPException(status_code=422, detail=detail)
 
     hashed_password = pwd_context.hash(registration.password)
     user = UserInDB(
