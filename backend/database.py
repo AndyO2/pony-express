@@ -86,12 +86,6 @@ def get_user_by_id(user_id: int, session: Session) -> UserInDB:
 
 def update_user(session: Session, user_id: int, user_update: UserUpdate) -> UserInDB:
     user = get_user_by_id(user_id, session)
-    # if user_update.username:
-    #     user.username = user_update.username
-    #     # setattr(user, "username", user_update.username)
-    # if user_update.email:
-    #     user.email = user_update.email
-    #     # setattr(user, "email", user_update.email)
 
     for attr, value in user_update.model_dump(exclude_unset=True).items():
         setattr(user, attr, value)
