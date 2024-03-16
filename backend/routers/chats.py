@@ -53,10 +53,14 @@ def get_chat_by_id(
         chat=chat,
     )
 
-    if "messages" in include:
-        ret.messages = sorted(chat.messages, key=lambda message: getattr(
-            message, "created_at")),
-    if "users" in include:
+    if include and "messages" in include:
+        t = []
+        for m in chat.messages:
+            t.append(Message(id=m.id, chat_id=m.chat_id, text=m.text,
+                     user=m.user, created_at=m.created_at))
+        ret.messages = sorted(
+            t, key=lambda message: getattr(message, "created_at"))
+    if include and "users" in include:
         ret.users = chat.users
 
     return ret
