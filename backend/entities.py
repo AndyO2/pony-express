@@ -142,10 +142,9 @@ class UserCollection(BaseModel):
 class Message(SQLModel):
     id: int
     text: str
-    user_id: int
     chat_id: int
-    created_at: datetime
     user: User
+    created_at: datetime
 
 
 class MessageCollection(BaseModel):
