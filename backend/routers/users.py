@@ -90,4 +90,4 @@ def get_self(
 ):
     """update user."""
 
-    return UserResponse(user=db.update_user(session, user, user_update))
+    return UserResponse(user=db.update_user(session, user.id, user_update))

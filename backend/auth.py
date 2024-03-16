@@ -151,7 +151,6 @@ def _get_authenticated_user(
         session: Session,
         form: OAuth2PasswordRequestForm,
 ) -> UserInDB:
-    # check if a user with form username exists
     user = session.exec(
         select(UserInDB).where(UserInDB.username == form.username)
     ).first()
@@ -193,16 +192,3 @@ def _decode_access_token(session: Session, token: str) -> Type[UserInDB]:
         raise InvalidToken()
     except ValidationError():
         raise InvalidToken()
-
-
-def check_user_exists(session: Session, username: str, email: str) -> str:
-    statement = select(UserInDB).where(UserInDB.username == username)
-    user = session.exec(statement).first()
-    if user is not None:
-        return "username"
-    statement = select(UserInDB).where(UserInDB.email == email)
-    user = session.exec(statement).first()
-    if user is not None:
-        return "email"
-    else:
-        return ""

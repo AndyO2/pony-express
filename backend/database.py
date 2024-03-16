@@ -84,7 +84,8 @@ def get_user_by_id(user_id: int, session: Session) -> UserInDB:
     raise EntityNotFoundException(entity_name="User", entity_id=user_id)
 
 
-def update_user(session: Session, user: UserInDB, user_update: UserUpdate) -> UserInDB:
+def update_user(session: Session, user_id: int, user_update: UserUpdate) -> UserInDB:
+    user = get_user_by_id(user_id, session)
     if user_update.username:
         setattr(user, "username", user_update.username)
     if user_update.email:
