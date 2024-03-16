@@ -87,7 +87,8 @@ def get_messages_for_chat_id(chat_id: int, session: Session = Depends(db.get_ses
 
     return MessageCollection(
         meta={"count": len(messages)},
-        messages=messages
+        messages=sorted(messages, key=lambda message: getattr(
+            message, "created_at"))
     )
 
 
