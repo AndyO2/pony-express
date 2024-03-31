@@ -1,37 +1,53 @@
 import json
-from datetime import datetime, timezone
-from fastapi import HTTPException
+from typing import Sequence, Type
 
-from backend.entities import (
-    UserInDB,
-    UserCreate,
-    UserUpdate,
-    ChatInDB,
-    ChatUpdate,
-    Message,
+from fastapi import HTTPException
+from backend.entities import *
+from sqlmodel import Session, SQLModel, create_engine, select
+
+from backend.entities import ChatInDB, UserInDB
+
+# DB funcs should return SQL Models (Routes should return BaseModel)
+
+# A3 ADDITIONS----------------------------
+engine = create_engine(
+    "sqlite:///backend/pony_express.db",
+    echo=True,
+    connect_args={"check_same_thread": False},
 )
+
+
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+
+
+# END A3 ADDITIONS------------------------
 
 with open("backend/fake_db.json", "r") as f:
     DB = json.load(f)
 
 
 class EntityNotFoundException(Exception):
-    def __init__(self, *, entity_name: str, entity_id: str):
+    def __init__(self, *, entity_name: str, entity_id: int):
         self.entity_name = entity_name
         self.entity_id = entity_id
 
 
 #   -------- users --------   #
+def get_all_users(session: Session) -> Sequence[UserInDB]:
+    return session.exec(select(UserInDB)).all()
 
 
-def get_all_users() -> list[UserInDB]:
-    return [UserInDB(**user_data) for user_data in DB["users"].values()]
-
-
-def create_user(user_create: UserCreate) -> UserInDB:
+def create_user(user_create: UserCreate, session: Session) -> UserInDB:
     """
     Create a new user in the database.
 
+    :param session:
     :param user_create: attributes of the user to be created
     :return: the newly created user
     """
@@ -53,93 +69,110 @@ def create_user(user_create: UserCreate) -> UserInDB:
     return user
 
 
-def get_user_by_id(user_id: str) -> UserInDB:
+def get_user_by_id(user_id: int, session: Session) -> UserInDB:
     """
     Retrieve a user from the database.
 
+    :param session:
     :param user_id: id of the user to be retrieved
     :return: the retrieved user
     """
-
-    if user_id in DB["users"]:
-        return UserInDB(**DB["users"][user_id])
+    user = session.get(UserInDB, user_id)
+    if user:
+        return user
 
     raise EntityNotFoundException(entity_name="User", entity_id=user_id)
 
 
-#   -------- users --------   #
-def get_all_chats() -> list[ChatInDB]:
-    return [ChatInDB(**chat_data) for chat_data in DB["chats"].values()]
+def update_user(session: Session, user_id: int, user_update: UserUpdate) -> UserInDB:
+    user = get_user_by_id(user_id, session)
+
+    for attr, value in user_update.model_dump(exclude_unset=True).items():
+        setattr(user, attr, value)
+
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+    return user
 
 
-def get_chats_by_user_id(user_id: str) -> list[ChatInDB]:
-    if user_id not in DB["users"]:
-        raise EntityNotFoundException(entity_name="User", entity_id=user_id)
-
-    ret = []
-    chats = get_all_chats()
-
-    for chat in chats:
-        if user_id in chat.user_ids:
-            ret.append(chat)
-
-    return ret
+#   -------- chats --------   #
+def get_all_chats(session: Session) -> list[ChatInDB]:
+    return session.exec(select(ChatInDB)).all()
 
 
-def get_chat_by_id(chat_id: str) -> ChatInDB:
+def get_chats_by_user_id(user_id: int, session: Session) -> list[ChatInDB]:
+    # check if user exists
+    user = session.exec(select(UserInDB).where(UserInDB.id == user_id)).one()
+
+    return user.chats
+
+
+def get_chat_by_id(chat_id: int, session: Session) -> ChatInDB:
     """
     Retrieve a chat from the database.
 
+    :param session:
     :param chat_id: the id of the chat
     :return: the retrieved chat
     """
-
-    if chat_id in DB["chats"]:
-        return ChatInDB(**DB["chats"][chat_id])
+    chat = session.get(ChatInDB, chat_id)
+    if chat:
+        return chat
 
     raise EntityNotFoundException(entity_name="Chat", entity_id=chat_id)
 
 
-def update_chat(chat_id: str, chat_update: ChatUpdate) -> ChatInDB:
+def update_chat(chat_id: int, chat_update: ChatUpdate, session: Session) -> Type[ChatInDB]:
     """
     Update an animal in the database.
 
+    :param session:
     :param chat_id: id of the chat to be updated
     :param chat_update: attributes to be updated on the chat
     :return: the updated animal
     :raises EntityNotFoundException: if no such animal id exists
     """
 
-    chat = get_chat_by_id(chat_id)
-    if chat_update.name is not None:
-        chat.name = chat_update.name
+    chat = get_chat_by_id(chat_id, session)
+    for attr, val in chat_update.model_dump(exclude_unset=True).items():
+        setattr(chat, attr, val)
 
-    # update in database
-    DB["chats"][chat.id] = chat.model_dump()
+    session.add(chat)
+    session.commit()
+    session.refresh(chat)
 
     return chat
 
 
-def delete_chat(chat_id: str):
+def delete_chat(chat_id: int, session: Session):
     """
     Delete a chat from the database.
 
+    :param session:
     :param chat_id: the id of the chat to be deleted
     :raises EntityNotFoundException: if no such animal exists
     """
 
-    chat = get_chat_by_id(chat_id)
+    chat = get_chat_by_id(chat_id, session)
     del DB["chats"][chat.id]
 
 
-def get_messages_for_chat(chat_id: str):
-    if chat_id not in DB["chats"]:
-        raise EntityNotFoundException(entity_name="Chat", entity_id=chat_id)
+def get_messages_in_chat(chat_id: int, session: Session) -> list[MessageInDB]:
+    chat = get_chat_by_id(chat_id, session)
 
-    messages = []
-    for message in DB["chats"][chat_id]["messages"]:
-        messages.append(Message(id=message["id"],
-                                user_id=message["user_id"],
-                                text=message["text"],
-                                created_at=message["created_at"]))
-    return messages
+    return chat.messages
+
+
+def get_users_in_chat(chat_id: int, session: Session) -> list[UserInDB]:
+    chat = get_chat_by_id(chat_id, session)
+
+    return chat.users
+
+
+# messages ----------------------------
+def create_message(session: Session, chat_id: int, text: str):
+    chat = get_chat_by_id(chat_id, session)
+
+    pass
