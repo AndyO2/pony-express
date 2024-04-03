@@ -13,6 +13,10 @@ import TopNav from "./components/TopNav";
 // cd frontend
 // npm run dev
 
+// TO RUN backend:
+// in base directory
+// uvicorn backend.main:app --reload
+
 const queryClient = new QueryClient();
 
 function NotFound() {
