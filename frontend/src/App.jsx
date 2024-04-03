@@ -9,6 +9,10 @@ import Registration from "./components/Registration";
 import Login from "./components/Login";
 import TopNav from "./components/TopNav";
 
+// TO RUN:
+// cd frontend
+// npm run dev
+
 const queryClient = new QueryClient();
 
 function NotFound() {
