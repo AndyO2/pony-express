@@ -1,6 +1,6 @@
+/* eslint-disable react/prop-types */
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../context/auth";
-import { useUser } from "../context/user";
+import { useAuth, useUser } from "../hooks";
 
 function NavItem({ to, name, right }) {
     const className = ["border-purple-400", "py-2 px-4", "hover:bg-slate-800", right ? "border-l-2" : "border-r-2"].join(" ");

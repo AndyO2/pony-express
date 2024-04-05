@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+/* eslint-disable react/prop-types */
+import { createContext, useState } from "react";
 
 const getToken = () => sessionStorage.getItem("__buddy_system_token__");
 const storeToken = (token) => sessionStorage.setItem("__buddy_system_token__", token);
@@ -31,7 +32,4 @@ function AuthProvider({ children }) {
     return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }
 
-// custom hook
-const useAuth = () => useContext(AuthContext);
-
-export { AuthProvider, useAuth };
+export { AuthContext, AuthProvider };

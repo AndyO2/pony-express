@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/auth";
+import { useApiWithoutToken, useAuth } from "../hooks";
 import Button from "./Button";
 import FormInput from "./FormInput";
 
@@ -31,22 +31,19 @@ function Login() {
     const navigate = useNavigate();
 
     const { login } = useAuth();
+    const api = useApiWithoutToken();
 
     const disabled = username === "" || password === "";
 
     const onSubmit = (e) => {
         e.preventDefault();
 
-        fetch("http://127.0.0.1:8000/auth/token", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: new URLSearchParams({ username, password }),
-        }).then((response) => {
+        api.postForm("/auth/token", { username, password }).then((response) => {
             if (response.ok) {
-                response.json().then(login);
-                navigate("/");
+                response
+                    .json()
+                    .then(login)
+                    .then(() => navigate("/animals"));
             } else if (response.status === 401) {
                 response.json().then((data) => {
                     setError(data.detail.error_description);

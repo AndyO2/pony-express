@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Chats from "./components/Chats";
-import { AuthProvider, useAuth } from "./context/auth";
+import { AuthProvider } from "./context/auth";
+import { useAuth } from "./hooks";
 import { UserProvider } from "./context/user";
 import Profile from "./components/Profile";
 import Registration from "./components/Registration";
