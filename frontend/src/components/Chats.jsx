@@ -3,6 +3,7 @@
 import { useParams } from "react-router-dom";
 import "./Chats.css";
 import LeftNav from "./LeftNav";
+import Chat from './Chat';
 
 function Chats() {
     const { chatId } = useParams();
@@ -12,7 +13,7 @@ function Chats() {
         <LeftNav />
       </div>
       <div className="mx-auto pt-8">
-                
+        <Chat></Chat>
       </div>
     </div>
     );

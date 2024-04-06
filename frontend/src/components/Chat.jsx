@@ -5,7 +5,7 @@ import { NavLink, useParams } from "react-router-dom";
 import { useApi } from "../hooks";
 import NewChat from "./NewChat";
 
-function AttrRow({ animal, attr }) {
+function AttrRow({ chat, attr }) {
   const className = [
     "flex flex-row",
     "items-center justify-between",
@@ -13,13 +13,13 @@ function AttrRow({ animal, attr }) {
     "p-2",
   ].join(" ");
 
-  const parseValue = (animal, attr) => {
+  const parseValue = (chat, attr) => {
     if (attr === "intake_date") {
-      return new Date(animal[attr]).toDateString();
+      return new Date(chat[attr]).toDateString();
     } else if (attr === "fixed" || attr === "vaccinated") {
-      return animal[attr] ? "\u2713" : "\u2715";
+      return chat[attr] ? "\u2713" : "\u2715";
     }
-    return animal[attr].toString();
+    return chat[attr].toString();
   }
 
   const parseAttr = (attr) => attr.split("_").join(" ");
@@ -27,7 +27,7 @@ function AttrRow({ animal, attr }) {
   return (
     <div className={className}>
       <div className="font-mono text-sm text-slate-500">{parseAttr(attr)}:</div>
-      <div>{parseValue(animal, attr)}</div>
+      <div>{parseValue(chat, attr)}</div>
     </div>
   )
 }
@@ -40,7 +40,7 @@ function NoChat() {
   );
 }
 
-function ChatCard({ animal }) {
+function ChatCard({ chat }) {
   const attributes = [
     "kind",
     "age",
@@ -58,11 +58,11 @@ function ChatCard({ animal }) {
   return (
     <div className="flex flex-col w-64">
       <h2 className="text-center text-2xl text-grn font-bold py-4">
-        {animal.name}
+        {chat.name}
       </h2>
       <div className={cardClassName}>
         {attributes.map((attr) => (
-          <AttrRow key={attr} animal={animal} attr={attr} />
+          <AttrRow key={attr} chat={chat} attr={attr} />
         ))}
       </div>
     </div>
@@ -81,18 +81,18 @@ function ChatCardQueryContainer({ chatId }) {
   });
 
   if (data?.chat) {
-    return <ChatCard animal={data.animal} />
+    return <ChatCard chat={data.chat} />
   }
 
   return <NoChat />;
 }
 
 function Chat() {
-  const { animalId } = useParams();
+  const { chatId } = useParams();
 
-  if (animalId) {
+  if (chatId) {
     return (
-      <ChatCardQueryContainer animalId={animalId} />
+      <ChatCardQueryContainer chatId={chatId} />
     );
   }
 
