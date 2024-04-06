@@ -23,15 +23,7 @@ function AuthenticatedNavItems() {
         <>
             <NavItem
                 to="/"
-                name="home"
-            />
-            <NavItem
-                to="/animals"
-                name="animals"
-            />
-            <NavItem
-                to="/counter"
-                name="counter"
+                name="pony express"
             />
             <div className="flex-1" />
             <NavItem
@@ -48,7 +40,7 @@ function UnauthenticatedNavItems() {
         <>
             <NavItem
                 to="/"
-                name="home"
+                name="pony express"
             />
             <div className="flex-1" />
             <NavItem
