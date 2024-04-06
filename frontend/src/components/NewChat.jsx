@@ -19,21 +19,6 @@ function Input ( props ) {
   );
 }
 
-function Checkbox ( props ) {
-  return (
-    <div className="flex flex-row py-2">
-      <input
-        { ...props }
-        className="border rounded bg-transparent px-2 py-1"
-        type="checkbox"
-      />
-      <label className="text-s text-gray-400 ml-4" htmlFor={ props.name }>
-        { props.name }
-      </label>
-    </div>
-  );
-}
-
 function NewChatForm () {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -41,20 +26,31 @@ function NewChatForm () {
   const api = useApi();
   const { chatId } = useParams();
 
-  const [ message, setName ] = useState( "" );
+  const [ message, setMessage ] = useState( "" );
 
   const mutation = useMutation( {
     mutationFn: () => (
       api.post(
         `/chats/${ chatId }/messages`,
+        {
+          token,
+          chatId
+        }
       ).then( ( response ) => response.json() )
     ),
     onSuccess: ( data ) => {
       queryClient.invalidateQueries( {
         queryKey: [ "chats" ],
       } );
-      navigate( `/chats/${ data.chat.id }` );
+      if ( data.detail ) {
+        console.log( data );
+        navigate( `/chats/${ chatId }` );
+      }
+      navigate( `/chats/${ data.message.chat_id }` );
     },
+    onError: () => {
+      console.log( 'error' );
+    }
   } );
 
   const onSubmit = ( e ) => {
@@ -68,7 +64,7 @@ function NewChatForm () {
         name="message"
         type="text"
         value={ message }
-        onChange={ ( e ) => setName( e.target.value ) }
+        onChange={ ( e ) => setMessage( e.target.value ) }
       />
       <Button type="submit">send</Button>
     </form>
