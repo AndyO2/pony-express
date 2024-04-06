@@ -52,6 +52,7 @@ function Registration() {
 
     return (
         <div className="max-w-96 mx-auto py-8 px-4">
+            <h1>Register Page</h1>
             <form onSubmit={onSubmit}>
                 <FormInput
                     type="text"

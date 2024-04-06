@@ -16,7 +16,7 @@ function RegistrationLink() {
     return (
         <div className="pt-8 flex flex-col">
             <div className="text-xs">need an account?</div>
-            <Link to="/registration">
+            <Link to="/register">
                 <Button className="mt-1 w-full">register</Button>
             </Link>
         </div>
@@ -43,7 +43,7 @@ function Login() {
                 response
                     .json()
                     .then(login)
-                    .then(() => navigate("/animals"));
+                    .then(() => navigate("/chats"));
             } else if (response.status === 401) {
                 response.json().then((data) => {
                     setError(data.detail.error_description);
