@@ -1,13 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/prop-types */
-import { useParams } from "react-router-dom";
 import "./Chats.css";
 import LeftNav from "./LeftNav";
 import Chat from './Chat';
 
-function Chats() {
-    const { chatId } = useParams();
-    return (
+function Chats () {
+  return (
     <div className="flex flex-row h-screen w-screen">
       <div className="w-40">
         <LeftNav />
@@ -16,7 +14,7 @@ function Chats() {
         <Chat></Chat>
       </div>
     </div>
-    );
+  );
 }
 
 // function ChatListContainer() {
