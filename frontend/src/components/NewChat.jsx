@@ -42,11 +42,14 @@ function NewChatForm () {
       queryClient.invalidateQueries( {
         queryKey: [ "chats" ],
       } );
-      if ( data.detail ) {
-        console.log( data );
+      if ( data.detail.error ) {
+        console.log( data.detail.error );
         navigate( `/chats/${ chatId }` );
       }
-      navigate( `/chats/${ data.message.chat_id }` );
+      else {
+        console.log( 'success' );
+        navigate( `/chats/${ data.message.chat_id }` );
+      }
     },
     onError: () => {
       console.log( 'error' );
