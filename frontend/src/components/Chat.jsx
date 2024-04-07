@@ -69,7 +69,7 @@ function ChatCard ( { messages } ) {
           </div>
         ) ) }
       </div>
-      <NewChat></NewChat>
+      { messages.length > 0 && <NewChat></NewChat> }
     </div>
   )
 }
@@ -101,7 +101,7 @@ function Chat () {
     );
   }
 
-  return <NewChat />;
+  return <div>select a chat</div>
 }
 
 export default Chat;
