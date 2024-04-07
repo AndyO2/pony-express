@@ -103,11 +103,11 @@ function UnauthenticatedRoutes () {
 function Main () {
     const { isLoggedIn } = useAuth();
 
-    return <main className="max-h-main">{ isLoggedIn ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes /> }</main>;
+    return <main className="max-h-screen max-w-screen">{ isLoggedIn ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes /> }</main>;
 }
 
 function App () {
-    const className = [ "h-screen max-h-screen", "max-w-2xl mx-auto", "bg-gray-700 text-white", "flex flex-col" ].join( " " );
+    const className = [ "screen", "bg-gray-700 text-white", "flex flex-col" ].join( " " );
     return (
         <QueryClientProvider client={ queryClient }>
             <AuthProvider>
