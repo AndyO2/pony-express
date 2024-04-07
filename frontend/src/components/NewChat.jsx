@@ -43,6 +43,7 @@ function NewChatForm () {
         queryKey: [ "chats" ],
       } );
       console.log( 'success' );
+      console.log( data )
       navigate( `/chats/${ chatId }` );
     },
     onError: () => {

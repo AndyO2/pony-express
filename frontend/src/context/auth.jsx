@@ -1,22 +1,22 @@
 /* eslint-disable react/prop-types */
 import { createContext, useState } from "react";
 
-const getToken = () => sessionStorage.getItem("__buddy_system_token__");
-const storeToken = (token) => sessionStorage.setItem("__buddy_system_token__", token);
-const clearToken = () => sessionStorage.removeItem("__buddy_system_token__");
+const getToken = () => sessionStorage.getItem( "__pony_express_token__" );
+const storeToken = ( token ) => sessionStorage.setItem( "__pony_express_token__", token );
+const clearToken = () => sessionStorage.removeItem( "__pony_express_token__" );
 
 const AuthContext = createContext();
 
-function AuthProvider({ children }) {
-    const [token, setToken] = useState(getToken);
+function AuthProvider ( { children } ) {
+    const [ token, setToken ] = useState( getToken );
 
-    const login = (tokenData) => {
-        setToken(tokenData.access_token);
-        storeToken(tokenData.access_token);
+    const login = ( tokenData ) => {
+        setToken( tokenData.access_token );
+        storeToken( tokenData.access_token );
     };
 
     const logout = () => {
-        setToken(null);
+        setToken( null );
         clearToken();
     };
 
@@ -29,7 +29,7 @@ function AuthProvider({ children }) {
         logout,
     };
 
-    return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={ contextValue }>{ children }</AuthContext.Provider>;
 }
 
 export { AuthContext, AuthProvider };
