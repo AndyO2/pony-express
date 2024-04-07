@@ -41,19 +41,12 @@ function NoChat () {
 }
 
 function ChatCard ( { messages } ) {
-  const createdAtDate = new Date( messages[ 0 ].created_at );
-
-  // Format the date as "Month Day, Year"
-  const formattedDate = createdAtDate.toLocaleDateString( "en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  } );
-
   const cardClassName = [
     "bg-lgrn text-black",
     "border-2 border-slate-900",
     "shadow-md shadow-slate-900",
+    "bg-slate-500",
+    "mb-2"
   ].join( " " );
 
   return (
@@ -64,7 +57,7 @@ function ChatCard ( { messages } ) {
       <div>
         { messages.map( ( message ) => (
           <div className={ cardClassName } key={ message.id }>
-            <div>{ message.user.username } { new Date( message.created_at ).toLocaleDateString( "en-US", { year: "numeric", month: "long", day: "numeric" } ) }</div>
+            <div className="flex justify-content-space-between">{ message.user.username } on { new Date( message.created_at ).toLocaleDateString( "en-US", { year: "numeric", month: "long", day: "numeric" } ) }</div>
             <div>{ message.text }</div>
           </div>
         ) ) }
