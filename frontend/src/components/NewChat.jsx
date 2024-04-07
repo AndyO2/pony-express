@@ -33,8 +33,8 @@ function NewChatForm () {
       api.post(
         `/chats/${ chatId }/messages`,
         {
+          text: message,
           token,
-          chatId
         }
       ).then( ( response ) => response.json() )
     ),
@@ -42,14 +42,8 @@ function NewChatForm () {
       queryClient.invalidateQueries( {
         queryKey: [ "chats" ],
       } );
-      if ( data.detail.error ) {
-        console.log( data.detail.error );
-        navigate( `/chats/${ chatId }` );
-      }
-      else {
-        console.log( 'success' );
-        navigate( `/chats/${ data.message.chat_id }` );
-      }
+      console.log( 'success' );
+      navigate( `/chats/${ chatId }` );
     },
     onError: () => {
       console.log( 'error' );
