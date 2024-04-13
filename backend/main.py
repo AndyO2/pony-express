@@ -11,6 +11,8 @@ from backend.database import EntityNotFoundException
 from contextlib import asynccontextmanager
 from backend.database import create_db_and_tables
 
+from mangum import Mangum
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -74,3 +76,6 @@ def default() -> HTMLResponse:
         </html>
         """,
     )
+
+
+lambda_handler = Mangum(app)

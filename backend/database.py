@@ -9,10 +9,16 @@ from backend.entities import ChatInDB, UserInDB
 
 # DB funcs should return SQL Models (Routes should return BaseModel)
 
-# A3 ADDITIONS----------------------------
+if os.environ.get("DB_LOCATION") == "EFS":
+    db_path = "/mnt/efs/pony_express.db"
+    echo = False
+else:
+    db_path = "backend/pony_express.db"
+    echo = True
+
 engine = create_engine(
-    "sqlite:///backend/pony_express.db",
-    echo=True,
+    f"sqlite:///{db_path}",
+    echo=echo,
     connect_args={"check_same_thread": False},
 )
 
