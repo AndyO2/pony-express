@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timezone
-from typing import Annotated, Dict, Type
-from typing_extensions import Annotated, Doc
+from typing import Annotated, Type
+from typing_extensions import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -11,7 +11,7 @@ from pydantic import BaseModel, ValidationError
 from sqlmodel import Session, SQLModel, select
 
 from backend import database as db
-from backend.entities import User, UserInDB, UserResponse
+from backend.entities import UserInDB, UserResponse
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 access_token_duration = 3600  # seconds
