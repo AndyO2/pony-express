@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "pony-express"
+name = "buddy-system"
 version = "0.1.0"
 description = ""
-authors = ["your_name <your@email>"]
+authors = ["dw <itscomputers@proton.me>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -21,6 +21,7 @@ mangum = "^0.17.0"
 ipython = "^8.20.0"
 pytest = "^7.4.0"
 httpx = "^0.26.0"
+pyclean = "^3.0.0"
 
 
 [tool.poetry.group.postgres.dependencies]
