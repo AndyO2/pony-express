@@ -9,13 +9,15 @@ const api = (token) => {
     headers["Authorization"] = "Bearer " + token;
   }
 
-  const get = (url) => fetch(baseUrl + url, { method: "GET", headers });
+  const get = (url) =>
+    fetch(baseUrl + url, { method: "GET", headers, mode: "cors" });
 
   const post = (url, body) =>
     fetch(baseUrl + url, {
       method: "POST",
       body: JSON.stringify(body),
       headers,
+      mode: "cors",
     });
 
   const postForm = (url, body) =>
@@ -26,6 +28,7 @@ const api = (token) => {
         ...headers,
         "Content-Type": "application/x-www-form-urlencoded",
       },
+      mode: "cors",
     });
 
   return { get, post, postForm };
