@@ -10,14 +10,14 @@ const api = (token) => {
   }
 
   const get = (url) =>
-    fetch(baseUrl + url, { method: "GET", headers, mode: "cors" });
+    fetch(baseUrl + url, { method: "GET", headers, mode: "no-cors" });
 
   const post = (url, body) =>
     fetch(baseUrl + url, {
       method: "POST",
       body: JSON.stringify(body),
       headers,
-      mode: "cors",
+      mode: "no-cors",
     });
 
   const postForm = (url, body) =>
@@ -28,7 +28,7 @@ const api = (token) => {
         ...headers,
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      mode: "cors",
+      mode: "no-cors",
     });
 
   return { get, post, postForm };
